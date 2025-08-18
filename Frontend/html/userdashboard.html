@@ -1,0 +1,188 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-dark shadow-lg p-4">
+      <h1 class="text-2xl font-bold mb-6">My Dashboard</h1>
+      <nav>
+        <ul class="space-y-2">
+          <li>
+            <a
+              href="#he yueh ethwet"
+              id="home-page"
+              class="block p-2 hover:bg-gray-200 rounded"
+              >🏠 Home</a
+            >
+          </li>
+          <li>
+            <a href="#" class="block p-2 hover:bg-gray-200 rounded">📊 Stats</a>
+          </li>
+          <li>
+            <a href="#" class="block p-2 hover:bg-gray-200 rounded"
+              >⚙️ Settings</a
+            >
+          </li>
+          <!-- dashboard.html -->
+          <ul class="space-y-2">
+            <li>
+              <a
+                href="profile.html"
+                class="block p-2 rounded hover:bg-gray-200"
+              >
+                👤 Profile
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="transactions.html"
+                class="block p-2 rounded hover:bg-gray-200"
+              >
+                📄 Transactions
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="make_payment2.html"
+                id="makePayment-btn"
+                class="block p-2 rounded hover:bg-blue-200"
+              >
+                💳 Make Payment
+              </a>
+            </li>
+          </ul>
+
+          <li>
+            <a
+              href="#"
+              id="logoutBtn"
+              class="block p-2 hover:bg-red-100 text-red-500 rounded"
+              >🚪 Logout</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <header class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold">
+          Welcome, <span id="userDetail"></span>
+        </h2>
+      </header>
+
+      <!-- Stats Cards -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="text-lg font-semibold">Recent Logins</h3>
+          <p class="text-gray-600" id="recentLogins">Loading...</p>
+        </div>
+        <!-- <div class="bg-white p-4 rounded shadow">
+          <h3 class="text-lg font-semibold">Account Balance</h3>
+          <p class="text-green-600 font-bold" id="accountBalance">$0</p>
+        </div> -->
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="text-lg font-semibold">Notifications</h3>
+          <p class="text-gray-600" id="notifications">No new alerts</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow mt-6">
+          <h3 class="text-lg font-semibold mb-4">Make a Payment</h3>
+          <button
+            id="makePaymentBtn"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            💳 Pay Now
+          </button>
+        </div>
+      </section>
+
+      <!-- Table Example -->
+      <section class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-semibold mb-4">Activity Log</h3>
+        <table class="w-full border-collapse border border-gray-200">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-2">Date</th>
+              <th class="border p-2">Action</th>
+              <th class="border p-2">Status</th>
+            </tr>
+          </thead>
+          <tbody id="activityTable">
+            <tr>
+              <td colspan="3" class="text-center p-4">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script>
+      // Check if user is logged in
+      let homeButton = document.querySelector("#home-page");
+
+      homeButton.addEventListener("click", () => {
+        window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html";
+      });
+
+      let user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html";
+      }
+
+      document.getElementById("userDetail").textContent =
+        user.name || user.email || "User";
+
+      // Fake data for now
+      document.querySelector("#recentLogins").textContent =
+        "Today, Yesterday, 3 days ago";
+      // document.querySelector("#accountBalance").textContent = "$5,230.00";
+      document.querySelector("#notifications").textContent =
+        "2 unread messages";
+
+      // Fake table data
+      const activityData = [
+        { date: "2025-08-12", action: "Login", status: "Success" },
+        { date: "2025-08-11", action: "OTP Verification", status: "Success" },
+        { date: "2025-08-10", action: "Password Change", status: "Success" },
+      ];
+
+      const tableBody = document.getElementById("activityTable");
+      tableBody.innerHTML = activityData
+        .map(
+          (row) => `
+  <tr>
+    <td class="border p-2">${row.date}</td>
+    <td class="border p-2">${row.action}</td>
+    <td class="border p-2">${row.status}</td>
+  </tr>
+`
+        )
+        .join("");
+
+      // Logout button
+      document.querySelector("#logoutBtn").addEventListener("click", () => {
+        console.log("clicked");
+        localStorage.removeItem("user");
+        window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html";
+      });
+      document
+        .querySelector("#makePaymentBtn")
+        .addEventListener("click", () => {
+          console.log("clicked");
+          // localStorage.setItem("amount", selectedAmount);
+          window.location.href =
+            "http://127.0.0.1:5500/Frontend/html/make_payment2.html";
+        });
+
+    </script>
+  </body>
+</html>

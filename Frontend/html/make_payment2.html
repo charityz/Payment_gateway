@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Payment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-500 flex items-center justify-center min-h-screen">
+    <div
+      class="bg-white shadow-lg rounded-2xl flex w-full max-w-5xl overflow-hidden"
+    >
+      <!-- Tabs (Left) -->
+      <div class="flex flex-col items-start p-4 space-y-4 bg-gray-50 w-20">
+        <button
+          id="tab-card"
+          class="w-full flex items-center justify-center bg-green-500 text-white p-3 rounded-lg shadow cursor-pointer"
+          title="Card"
+        >
+          💳
+        </button>
+        <button
+          id="tab-transfer"
+          class="w-full flex items-center justify-center bg-gray-200 text-gray-700 p-3 rounded-lg hover:bg-gray-300 cursor-pointer"
+          title="Bank Transfer"
+        >
+          🏦
+        </button>
+        <button
+          id="tab-wallet"
+          class="w-full flex items-center justify-center bg-gray-200 text-gray-700 p-3 rounded-lg hover:bg-gray-300 cursor-pointer"
+          title="Wallet"
+        >
+          👛
+        </button>
+      </div>
+
+      <!-- Form (Right) -->
+      <div class="flex-1 p-8">
+        <!-- Back Button -->
+        <button
+          id="back-btn"
+          title="Back to Dashboard"
+          class="flex items-center gap-2 text-gray-600 hover:text-blue-600 mb-6"
+        >
+          <!-- Back Arrow SVG -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span></span>
+        </button>
+
+        <h2 class="text-2xl font-bold mb-6">Complete Your Payment</h2>
+
+        <!-- User + Amount -->
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-gray-600 mb-1">Email</label>
+            <input
+              id="email"
+              type="email"
+              readonly
+              class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1">Amount (NGN)</label>
+            <input
+              id="amount"
+              type="text"
+              readonly
+              class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
+            />
+          </div>
+        </div>
+
+        <!-- Card MOCK -->
+        <div id="card-mock" class="mb-6">
+          <div
+            class="rounded-xl p-5 bg-gradient-to-r from-slate-800 to-slate-600 text-white shadow-md max-w-md"
+          >
+            <div class="text-xs opacity-80">VIRTUAL CARD</div>
+            <div id="mock-number" class="text-xl tracking-widest mt-3">
+              ####-####-####-####
+            </div>
+            <div class="flex justify-between mt-3 text-sm opacity-90">
+              <div>EXP: <span id="mock-exp">MM/YY</span></div>
+              <div>CVV: <span id="mock-cvv">***</span></div>
+            </div>
+            <div class="mt-4 text-xs opacity-80">NGN Payment</div>
+          </div>
+        </div>
+
+        <!-- CARD FORM -->
+        <div id="form-card" class="space-y-4">
+          <div>
+            <label class="block text-gray-600 mb-1">Card Number</label>
+            <input
+              id="card-number"
+              type="text"
+              inputmode="numeric"
+              autocomplete="cc-number"
+              placeholder="1234-5678-9012-3456"
+              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+            <p id="err-card" class="text-red-600 text-sm mt-1 hidden">
+              Invalid card number.
+            </p>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <label class="block text-gray-600 mb-1">Expiry (MM/YY)</label>
+              <input
+                id="expiry"
+                type="text"
+                inputmode="numeric"
+                autocomplete="cc-exp"
+                placeholder="MM/YY"
+                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <p id="err-exp" class="text-red-600 text-sm mt-1 hidden">
+                Expiry date is invalid or past.
+              </p>
+            </div>
+            <div class="flex-1">
+              <label class="block text-gray-600 mb-1">CVV</label>
+              <input
+                id="cvv"
+                type="password"
+                inputmode="numeric"
+                autocomplete="cc-csc"
+                placeholder="123"
+                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <p id="err-cvv" class="text-red-600 text-sm mt-1 hidden">
+                CVV must be 3 digits.
+              </p>
+            </div>
+          </div>
+          <button
+            id="pay-now"
+            class="w-full mt-2 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+          >
+            <span class="btn-text">Pay Now</span>
+            <svg
+              class="animate-spin h-5 w-5 hidden"
+              id="btn-spinner"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+                opacity=".25"
+              ></circle>
+              <path
+                d="M4 12a8 8 0 018-8"
+                stroke="currentColor"
+                stroke-width="4"
+                opacity=".75"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- TRANSFER FORM -->
+        <div id="form-transfer" class="space-y-4 hidden">
+          <div>
+            <label class="block text-gray-600 mb-1">Account Number</label>
+            <input
+              id="account-number"
+              type="text"
+              inputmode="numeric"
+              placeholder="0123456789"
+              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1">Bank Name</label>
+            <input
+              id="bank-name"
+              type="text"
+              placeholder="Access Bank"
+              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <button
+            id="transfer-btn"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded w-full"
+          >
+            Make Transfer
+          </button>
+        </div>
+
+        <!-- WALLET FORM -->
+        <div id="form-wallet" class="space-y-4 hidden">
+          <div>
+            <label class="block text-gray-600 mb-1">Wallet ID / Email</label>
+            <input
+              id="wallet-id"
+              type="text"
+              placeholder="wallet@example.com"
+              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <button
+            id="wallet-btn"
+            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded w-full"
+          >
+            Pay from Wallet
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const url = document.URL;
+        console.log(url);
+
+        const id = url.split("id=")[1];
+        console.log(id)
+        
+        // const database =[
+        //   {
+        //     id: 987654321,
+        //     payment_id: 56768689,
+        //     email: "def@gmail.com",
+        //     amount: 2400.98,
+        //     createdAt: "Tue 12 aug, 2008"
+        //   },
+        //   {
+        //     id:1234567890,
+        //     payment_id: 56768686,
+        //     email: "abc@gmail.com",
+        //     amount: 1200.98,
+        //     createdAt: "Tue 17 aug, 2008"
+        //   }
+        // ]
+        async function fetchDataFromPaymentId(payment_id){
+       
+          if(!payment_id){
+            return "Input Payment Id"
+          }
+          const response  = await fetch(`http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`)
+          const data = await response.json()
+          return data
+          // check db
+        // const getPayment = database.filter((payment) => payment.payment_id === payment_id)
+        // if(getPayment[0] === undefined){
+        //   return `Payment wuth the ID: ${payment_id} not found`
+        // }
+        // return getPayment[0];
+        }
+
+        const {email:userEmail, amount:userAmount} = await fetchDataFromPaymentId(id);
+
+ 
+        
+            
+              
+              
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+        document.getElementById("email").value = userEmail || user.email
+        const qp = new URLSearchParams(location.search);
+        document.getElementById("amount").value = qp.get("amount") || userAmount;
+
+        // ========= Tabs =========
+        let tabCard = document.querySelector("#tab-card");
+        let tabTransfer = document.querySelector("#tab-transfer");
+        let tabWallet = document.querySelector("#tab-wallet");
+        let forms = {
+          card: document.querySelector("#form-card"),
+          transfer: document.querySelector("#form-transfer"),
+          wallet: document.querySelector("#form-wallet"),
+        };
+        const tabs = {
+          card: tabCard,
+          transfer: tabTransfer,
+          wallet: tabWallet,
+        };
+
+        function setActive(which) {
+          Object.values(tabs).forEach((btn) => {
+            btn.classList.remove("bg-green-500", "text-white");
+            btn.classList.add("bg-gray-200", "text-gray-700");
+          });
+          tabs[which].classList.remove("bg-gray-200", "text-gray-700");
+          tabs[which].classList.add("bg-green-500", "text-white");
+
+          Object.values(forms).forEach((f) => f.classList.add("hidden"));
+          forms[which].classList.remove("hidden");
+
+          // Show card mock only on card tab
+          document
+            .getElementById("card-mock")
+            .classList.toggle("hidden", which !== "card");
+        }
+
+        tabCard.addEventListener("click", () => setActive("card"));
+        tabTransfer.addEventListener("click", () => setActive("transfer"));
+        tabWallet.addEventListener("click", () => setActive("wallet"));
+        setActive("card");
+
+        // ========= Card Inputs =========
+        let cardNumber = document.querySelector("#card-number");
+        let expiry = document.querySelector("#expiry");
+        let cvv = document.querySelector("#cvv");
+        let errCard = document.querySelector("#err-card");
+        let errExp = document.querySelector("#err-exp");
+        let errCvv = document.querySelector("#err-cvv");
+
+        const mockNum = document.querySelector("#mock-number");
+        const mockExp = document.querySelector("#mock-exp");
+        const mockCvv = document.querySelector("#mock-cvv");
+
+        function luhnValid(num) {
+          let sum = 0,
+            dbl = false;
+          for (let i = num.length - 1; i >= 0; i--) {
+            let d = parseInt(num[i], 10);
+            if (dbl) {
+              d *= 2;
+              if (d > 9) d -= 9;
+            }
+            sum += d;
+            dbl = !dbl;
+          }
+          return sum % 10 === 0;
+        }
+
+        cardNumber.addEventListener("input", () => {
+          let val = cardNumber.value.replace(/\D/g, "").slice(0, 16);
+          const grouped = val.match(/.{1,4}/g)?.join("-") || val;
+          cardNumber.value = grouped;
+          mockNum.textContent = grouped.padEnd(19, "•");
+          errCard.classList.add("hidden");
+          cardNumber.classList.remove("border-red-500");
+        });
+
+        expiry.addEventListener("input", () => {
+          let val = expiry.value.replace(/\D/g, ""); // keep digits only
+          if (val.length === 2 && !expiry.value.includes("/")) {
+            // Add slash immediately after 2 digits entered
+            val = val + "/";
+          } else if (val.length > 2) {
+            val = val.slice(0, 2) + "/" + val.slice(2, 4);
+          }
+
+          expiry.value = val;
+          mockExp.textContent = val || "MM/YY";
+          errExp.classList.add("hidden");
+          expiry.classList.remove("border-red-500");
+        });
+
+        cvv.addEventListener("input", () => {
+          cvv.value = cvv.value.replace(/\D/g, "").slice(0, 3);
+          mockCvv.textContent = cvv.value.replace(/./g, "*") || "***";
+          errCvv.classList.add("hidden");
+          cvv.classList.remove("border-red-500");
+        });
+
+        function isExpired(mmYY) {
+          const [mmS, yyS] = (mmYY || "").split("/");
+          const mm = parseInt(mmS, 10),
+            yy = parseInt(yyS, 10);
+          if (!mm || !yy || mm < 1 || mm > 12) return true;
+          const now = new Date();
+          const curM = now.getMonth() + 1;
+          const curY = now.getFullYear() % 100;
+          return yy < curY || (yy === curY && mm < curM);
+        }
+
+        // ========= Payment Helper =========
+        async function makePayment(payload, btn, btnText = "Pay Now") {
+          const spinner = document.getElementById("btn-spinner");
+          const text = btn.querySelector(".btn-text") || btn;
+          btn.disabled = true;
+          if (spinner) spinner.classList.remove("hidden");
+          if (text) text.textContent = "Processing…";
+
+          try {
+            const res = await fetch(
+              "http://127.0.0.1:8000/api/v1/make_payment",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              }
+            );
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "Request failed");
+            alert(data.message || "Payment processed successfully!");
+          } catch (e) {
+            alert("Error: " + e.message);
+          } finally {
+            btn.disabled = false;
+            if (spinner) spinner.classList.add("hidden");
+            if (text) text.textContent = btnText;
+          }
+        }
+
+        // ========= Card Submit =========
+        document.getElementById("pay-now").addEventListener("click", () => {
+          const raw = cardNumber.value.replace(/-/g, "");
+          let valid = true;
+
+          if (raw.length !== 16 || !luhnValid(raw)) {
+            errCard.classList.remove("hidden");
+            cardNumber.classList.add("border-red-500");
+            valid = false;
+          }
+          if (isExpired(expiry.value)) {
+            errExp.classList.remove("hidden");
+            expiry.classList.add("border-red-500");
+            valid = false;
+          }
+          if (cvv.value.length !== 3) {
+            errCvv.classList.remove("hidden");
+            cvv.classList.add("border-red-500");
+            valid = false;
+          }
+          if (!valid) return;
+
+          makePayment(
+            {
+              method: "card",
+              amount: parseFloat(document.getElementById("amount").value),
+              currency: "NGN",
+              card_number: raw,
+              expiry: expiry.value,
+              cvv: cvv.value,
+            },
+            document.getElementById("pay-now")
+          );
+        });
+
+        // ========= Transfer Submit with Validation =========
+        document
+          .getElementById("transfer-btn")
+          .addEventListener("click", () => {
+            const accountNum = document.getElementById("account-number");
+            const bankName = document.getElementById("bank-name");
+            let valid = true;
+
+            [accountNum, bankName].forEach((input) => {
+              input.classList.remove("border-red-500");
+              if (!input.value.trim()) {
+                input.classList.add("border-red-500");
+                valid = false;
+              }
+            });
+
+            if (!valid) return;
+
+            makePayment(
+              {
+                method: "transfer",
+                amount: parseFloat(document.getElementById("amount").value),
+                currency: "NGN",
+                account_number: accountNum.value,
+                bank_name: bankName.value,
+              },
+              document.getElementById("transfer-btn"),
+              "Make Transfer"
+            );
+          });
+
+        // ========= Wallet Submit with Validation =========
+        document.getElementById("wallet-btn").addEventListener("click", () => {
+          const walletId = document.getElementById("wallet-id");
+          let valid = true;
+
+          walletId.classList.remove("border-red-500");
+          if (!walletId.value.trim()) {
+            walletId.classList.add("border-red-500");
+            valid = false;
+          }
+
+          if (!valid) return;
+
+          makePayment(
+            {
+              method: "wallet",
+              amount: parseFloat(document.getElementById("amount").value),
+              currency: "NGN",
+              wallet_id: walletId.value,
+            },
+            document.getElementById("wallet-btn"),
+            "Pay from Wallet"
+          );
+        });
+      });
+      document.getElementById("back-btn").addEventListener("click", () => {
+        window.location.href = "http://127.0.0.1:5500/Frontend/html/userdashboard.html"; // change if your dashboard file has another name
+      });
+    </script>
+  </body>
+</html>

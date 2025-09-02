@@ -22,3 +22,38 @@ document.addEventListener("DOMContentLoaded", () => {
     createAccBtn.classList.remove("hidden");
   }
 });
+
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    await loginUser(email, password); 
+  });
+  // auth.js (or inside make_payment.js)
+
+async function loginUser(email, password) {
+  try {
+    const res = await fetch("https://blink-pay-bank-app-backend.onrender.com/api/v1/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.detail || "Login failed");
+    }
+
+    // Save token for later use
+    localStorage.setItem("authToken", data.token);
+
+    alert("Login successful!");
+    return data.token;
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+}
+

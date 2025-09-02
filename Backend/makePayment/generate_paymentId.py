@@ -46,7 +46,7 @@ async def generate_payment(request: Request):
         "message": "Payment link generated",
         "payment_link": payment_link,
        "access_code": access_code,
-        "reference_code": reference_code,  
+        "reference_code": reference_code, 
          }
 
     except KeyError:

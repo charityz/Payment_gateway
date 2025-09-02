@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head >
+  <body class="bg-gray-100 min-h-screen flex">
+    <!-- Table Example -->
+    <section class="bg-white p-4 rounded shadow">
+      <h3 class="text-lg font-semibold mb-4">Activity Log</h3>
+      <table class="w-full border-collapse border border-gray-200">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border p-2">Date</th>
+            <th class="border p-2">Action</th>
+            <th class="border p-2">Status</th>
+          </tr>
+        </thead>
+        <tbody id="activityTable">
+          <tr>
+            <td colspan="3" id="" class="text-center p-4">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination Controls -->
+      <div class="flex justify-between items-center mt-4">
+        <button
+          id="prevPage"
+          class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          ⬅ Prev
+        </button>
+        <span id="pageInfo" class="font-medium"></span>
+        <button
+          id="nextPage"
+          class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Next ➡
+        </button>
+      </div>
+    </section>
+
+    <script>
+      // Fake activity data (expand for demo)
+      const activityData = [
+        { date: "2025-08-12", action: "Login", status: "Success" },
+        { date: "2025-08-11", action: "OTP Verification", status: "Success" },
+        { date: "2025-08-10", action: "Password Change", status: "Success" },
+        { date: "2025-08-09", action: "Login", status: "Failed" },
+        { date: "2025-08-08", action: "Payment", status: "Success" },
+        { date: "2025-08-07", action: "Transfer", status: "Success" },
+        { date: "2025-08-06", action: "Login", status: "Success" },
+        { date: "2025-08-05", action: "OTP Verification", status: "Failed" },
+        { date: "2025-08-04", action: "Password Reset", status: "Success" },
+        { date: "2025-08-03", action: "Login", status: "Success" },
+        // … you can load real data from API instead
+      ];
+
+      let currentPage = 1;
+      const rowsPerPage = 5;
+
+      function renderTable() {
+        const tableBody = document.getElementById("activityTable");
+        tableBody.innerHTML = "";
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageData = activityData.slice(start, end);
+
+        pageData.forEach((row) => {
+          tableBody.innerHTML += `
+      <tr>
+        <td class="border p-2">${row.date}</td>
+        <td class="border p-2">${row.action}</td>
+        <td class="border p-2">${row.status}</td>
+      </tr>
+    `;
+        });
+
+        document.getElementById(
+          "pageInfo"
+        ).textContent = `Page ${currentPage} of ${Math.ceil(
+          activityData.length / rowsPerPage
+        )}`;
+      }
+
+      document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTable();
+        }
+      });
+
+      document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < Math.ceil(activityData.length / rowsPerPage)) {
+          currentPage++;
+          renderTable();
+        }
+      });
+
+      // First render
+      renderTable();
+    </script>
+  </body>
+</html>

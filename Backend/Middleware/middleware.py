@@ -6,7 +6,8 @@ from Backend.Routes.auth import users_collection
 
 class JWTMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        public_paths = ["/api/v1/signin","/api/v1/add_card","/api/v1/generate_payment", "/api/v1/register_user", "/api/v1/verify_otp", "/api/v1/verify_registration_otp",  "/api/v1/default_password", "/api/v1/verify_default_password", "/api/v1/make_payment","/api/v1/get_payment","/api/v1/show_payment" ]
+        # public_paths = ["/api/v1/signin","/api/v1/add_card","/api/v1/generate_payment", "/api/v1/register_user", "/api/v1/verify_otp", "/api/v1/verify_registration_otp",  "/api/v1/default_password", "/api/v1/verify_default_password", "/api/v1/activities", "/api/v1/transactions","/api/v1/make_payment","/api/v1/get_payment","/api/v1/show_payment" ]
+        public_paths = ["/api/v1/signin",   "/api/v1/register_user", "/api/v1/verify_otp", "/api/v1/verify_registration_otp","/api/v1/show_payment", "/api/v1/get_payment"]
         if request.url.path in public_paths:
             return await call_next(request)
 
@@ -19,10 +20,10 @@ class JWTMiddleware(BaseHTTPMiddleware):
         if not payload:
             return JSONResponse(status_code=401, content={"detail": "Invalid token"})
 
-        # Fetch user from DB
-        user = await users_collection.find_one({"email": payload["email"]})
-        if not user or not user.get("otp_verified"):
-            return JSONResponse(status_code=403, content={"detail": "OTP not verified"})
+        # # Fetch user from DB
+        # user = await users_collection.find_one({"email": payload["email"]})
+        # if not user or not user.get("otp_verified"):
+        #     return JSONResponse(status_code=403, content={"detail": "OTP not verified"})
 
         request.state.user = payload
         return await call_next(request)

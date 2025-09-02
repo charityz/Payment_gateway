@@ -6,95 +6,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  <body class="bg-gray-100 min-h-screen flex">
+  <body class="bg-gray-100 min-h-screen flex text-gray-800">
     <!-- Sidebar -->
-    <aside class="w-64 bg-dark shadow-lg p-4">
-      <h1 class="text-2xl font-bold mb-6">My Dashboard</h1>
-      <nav>
+    <aside class="w-64 bg-white shadow-lg p-4 flex-col">
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <div
+          class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-cyan-400 text-cyan-400 font-bold text-lg"
+        >
+          P
+        </div>
+        <h2 class="text-2xl font-bold">Payverge</h2>
+      </div>
+      <nav class="flex-1">
         <ul class="space-y-2">
           <li>
-            <a
-              href="#he yueh ethwet"
-              id="home-page"
-              class="block p-2 hover:bg-gray-200 rounded"
-              >🏠 Home</a
-            >
+            <a href="#" class="flex items-center p-2 rounded hover:bg-blue-100">
+              🏠 <span class="ml-2">Home</span>
+            </a>
           </li>
           <li>
-            <a href="#" class="block p-2 hover:bg-gray-200 rounded">📊 Stats</a>
+            <a href="#" class="flex items-center p-2 rounded hover:bg-blue-100">
+              📊 <span class="ml-2">Stats</span>
+            </a>
           </li>
-          <li>
-            <a href="#" class="block p-2 hover:bg-gray-200 rounded"
-              >⚙️ Settings</a
-            >
-          </li>
-          <!-- dashboard.html -->
-          <ul class="space-y-2">
-            <li>
-              <a
-                href="profile.html"
-                class="block p-2 rounded hover:bg-gray-200"
-              >
-                👤 Profile
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="transactions.html"
-                class="block p-2 rounded hover:bg-gray-200"
-              >
-                📄 Transactions
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="make_payment2.html"
-                id="makePayment-btn"
-                class="block p-2 rounded hover:bg-blue-200"
-              >
-                💳 Make Payment
-              </a>
-            </li>
-          </ul>
-
           <li>
             <a
-              href="#"
-              id="logoutBtn"
-              class="block p-2 hover:bg-red-100 text-red-500 rounded"
-              >🚪 Logout</a
+              href="transactions.html"
+              class="flex items-center p-2 rounded hover:bg-blue-100"
             >
+              📄 <span class="ml-2">Transactions</span>
+            </a>
+          </li>
+          <li>
+            <div class="relative">
+              <button
+                id="settingsBtn"
+                class="px-3 py-2 rounded hover:bg-gray-300"
+              >
+                ⚙️ Settings
+              </button>
+              <div
+                id="dropdownMenu"
+                class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10"
+              >
+                <button
+                  id="toggleTheme"
+                  class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                >
+                  Theme
+                </button>
+                <a href="profile.html" class="block px-4 py-2 hover:bg-gray-100"
+                  >Your Profile</a
+                >
+                <a
+                  href="transactions.html"
+                  class="block px-4 py-2 hover:bg-gray-100"
+                  >Transactions</a
+                >
+                <button
+                  id="logoutBtn2"
+                  class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </li>
+          <li>
+            <a
+              href="make_payment2.htmll"
+              class="flex items-center p-2 rounded hover:bg-blue-100"
+              id="makePaymentBtn"
+            >
+              💳 <span class="ml-2">Make Payment</span>
+            </a>
           </li>
         </ul>
+        <button
+          id="logoutBtn"
+          class="mt-auto flex items-center p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+        >
+          <span class="ml-2">Logout</span>
+        </button>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
+      <!-- Header -->
       <header class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold">
           Welcome, <span id="userDetail"></span>
         </h2>
       </header>
 
-      <!-- Stats Cards -->
+      <!-- Stat Cards -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white p-4 rounded shadow">
           <h3 class="text-lg font-semibold">Recent Logins</h3>
           <p class="text-gray-600" id="recentLogins">Loading...</p>
         </div>
-        <!-- <div class="bg-white p-4 rounded shadow">
-          <h3 class="text-lg font-semibold">Account Balance</h3>
-          <p class="text-green-600 font-bold" id="accountBalance">$0</p>
-        </div> -->
         <div class="bg-white p-4 rounded shadow">
           <h3 class="text-lg font-semibold">Notifications</h3>
           <p class="text-gray-600" id="notifications">No new alerts</p>
         </div>
-        <div class="bg-white p-4 rounded shadow mt-6">
+        <div class="bg-white p-4 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Make a Payment</h3>
           <button
             id="makePaymentBtn"
@@ -105,9 +123,36 @@
         </div>
       </section>
 
-      <!-- Table Example -->
+      <!-- Chart -->
+      <section class="bg-white p-4 rounded shadow mb-6">
+        <h3 class="text-lg font-semibold mb-4">Transactions Overview</h3>
+        <canvas id="activityFilter" height="50"></canvas>
+      </section>
+
+      <!-- Activity Log Section -->
       <section class="bg-white p-4 rounded shadow">
-        <h3 class="text-lg font-semibold mb-4">Activity Log</h3>
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center gap-4">
+            <h3 class="text-lg font-semibold">Activity Log</h3>
+
+            <!-- Dropdown Filter -->
+            <select id="activityFilter" class="px-3 py-2 border rounded">
+              <option value="all">All Activities</option>
+              <option value="transaction">Transactions</option>
+              <option value="login">Logins</option>
+              <option value="other">Other Activities</option>
+            </select>
+          </div>
+
+          <!-- Search -->
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Search by action or status..."
+            class="px-3 py-2 border rounded w-64"
+          />
+        </div>
+
         <table class="w-full border-collapse border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
@@ -116,73 +161,31 @@
               <th class="border p-2">Status</th>
             </tr>
           </thead>
-          <tbody id="activityTable">
-            <tr>
-              <td colspan="3" class="text-center p-4">Loading...</td>
-            </tr>
-          </tbody>
+          <tbody id="activityTable"></tbody>
         </table>
+
+        <!-- Pagination Controls -->
+        <div class="flex justify-between items-center mt-4">
+          <button
+            id="prevPage"
+            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            ⬅ Prev
+          </button>
+          <span id="pageInfo" class="font-medium"></span>
+          <button
+            id="nextPage"
+            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Next ➡
+          </button>
+        </div>
       </section>
     </main>
 
-    <script>
-      // Check if user is logged in
-      let homeButton = document.querySelector("#home-page");
+    <script src="../Js/userdashboard.js"></script>
 
-      homeButton.addEventListener("click", () => {
-        window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html";
-      });
-
-      let user = JSON.parse(localStorage.getItem("user"));
-      if (!user) {
-        window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html";
-      }
-
-      document.getElementById("userDetail").textContent =
-        user.name || user.email || "User";
-
-      // Fake data for now
-      document.querySelector("#recentLogins").textContent =
-        "Today, Yesterday, 3 days ago";
-      // document.querySelector("#accountBalance").textContent = "$5,230.00";
-      document.querySelector("#notifications").textContent =
-        "2 unread messages";
-
-      // Fake table data
-      const activityData = [
-        { date: "2025-08-12", action: "Login", status: "Success" },
-        { date: "2025-08-11", action: "OTP Verification", status: "Success" },
-        { date: "2025-08-10", action: "Password Change", status: "Success" },
-      ];
-
-      const tableBody = document.getElementById("activityTable");
-      tableBody.innerHTML = activityData
-        .map(
-          (row) => `
-  <tr>
-    <td class="border p-2">${row.date}</td>
-    <td class="border p-2">${row.action}</td>
-    <td class="border p-2">${row.status}</td>
-  </tr>
-`
-        )
-        .join("");
-
-      // Logout button
-      document.querySelector("#logoutBtn").addEventListener("click", () => {
-        console.log("clicked");
-        localStorage.removeItem("user");
-        window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html";
-      });
-      document
-        .querySelector("#makePaymentBtn")
-        .addEventListener("click", () => {
-          console.log("clicked");
-          // localStorage.setItem("amount", selectedAmount);
-          window.location.href =
-            "http://127.0.0.1:5500/Frontend/html/make_payment2.html";
-        });
-
-    </script>
   </body>
 </html>
+
+<!-- pagenation learn about it -->

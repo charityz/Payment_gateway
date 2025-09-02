@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from pydantic import BaseModel
 from typing import Literal
+from datetime import datetime
 
 class UserRegister(BaseModel):
     first_name: str = Field(..., min_length=1, description="First name is required")
@@ -49,4 +50,17 @@ class GeneratePaymentId(BaseModel):
     reference_code: str
     payment_id: int
     status: str = Field (default="pending")
+    
+class NotificationIn(BaseModel):
+    user_id: str
+    message: str
+    type: str = "general"
+
+class NotificationOut(NotificationIn):
+    id: str
+    status: str = "unread"
+    created_at: datetime
+   
+    
+    
     

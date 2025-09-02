@@ -7,6 +7,98 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-500 flex items-center justify-center min-h-screen">
+    <style>
+      /* From Uiverse.io by david-mohseni */
+      .loader {
+        position: relative;
+        width: 54px;
+        height: 54px;
+        border-radius: 10px;
+      }
+
+      .loader div {
+        width: 8%;
+        height: 24%;
+        background: rgb(128, 128, 128);
+        position: absolute;
+        left: 50%;
+        top: 30%;
+        opacity: 0;
+        border-radius: 50px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+        animation: fade458 1s linear infinite;
+      }
+
+      @keyframes fade458 {
+        from {
+          opacity: 1;
+        }
+
+        to {
+          opacity: 0.25;
+        }
+      }
+
+      .loader .bar1 {
+        transform: rotate(0deg) translate(0, -130%);
+        animation-delay: 0s;
+      }
+
+      .loader .bar2 {
+        transform: rotate(30deg) translate(0, -130%);
+        animation-delay: -1.1s;
+      }
+
+      .loader .bar3 {
+        transform: rotate(60deg) translate(0, -130%);
+        animation-delay: -1s;
+      }
+
+      .loader .bar4 {
+        transform: rotate(90deg) translate(0, -130%);
+        animation-delay: -0.9s;
+      }
+
+      .loader .bar5 {
+        transform: rotate(120deg) translate(0, -130%);
+        animation-delay: -0.8s;
+      }
+
+      .loader .bar6 {
+        transform: rotate(150deg) translate(0, -130%);
+        animation-delay: -0.7s;
+      }
+
+      .loader .bar7 {
+        transform: rotate(180deg) translate(0, -130%);
+        animation-delay: -0.6s;
+      }
+
+      .loader .bar8 {
+        transform: rotate(210deg) translate(0, -130%);
+        animation-delay: -0.5s;
+      }
+
+      .loader .bar9 {
+        transform: rotate(240deg) translate(0, -130%);
+        animation-delay: -0.4s;
+      }
+
+      .loader .bar10 {
+        transform: rotate(270deg) translate(0, -130%);
+        animation-delay: -0.3s;
+      }
+
+      .loader .bar11 {
+        transform: rotate(300deg) translate(0, -130%);
+        animation-delay: -0.2s;
+      }
+
+      .loader .bar12 {
+        transform: rotate(330deg) translate(0, -130%);
+        animation-delay: -0.1s;
+      }
+    </style>
     <div
       class="bg-white shadow-lg rounded-2xl flex w-full max-w-5xl overflow-hidden"
     >
@@ -36,35 +128,90 @@
       </div>
 
       <!-- Form (Right) -->
-      <div class="flex-1 p-8">
-        <!-- Back Button -->
-        <button
-          id="back-btn"
-          title="Back to Dashboard"
-          class="flex items-center gap-2 text-gray-600 hover:text-blue-600 mb-6"
-        >
-          <!-- Back Arrow SVG -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+      <div class="flex-1 p-8 flex flex-col" id="whole_form">
+        <!-- From Uiverse.io by david-mohseni -->
+        <div class="loader hidden">
+          <div class="bar1"></div>
+          <div class="bar2"></div>
+          <div class="bar3"></div>
+          <div class="bar4"></div>
+          <div class="bar5"></div>
+          <div class="bar6"></div>
+          <div class="bar7"></div>
+          <div class="bar8"></div>
+          <div class="bar9"></div>
+          <div class="bar10"></div>
+          <div class="bar11"></div>
+          <div class="bar12"></div>
+        </div>
+
+        <!-- evertything -->
+        <div class="everything">
+          <!-- Back Button -->
+          <button
+            id="back-btn"
+            title="Back to Dashboard"
+            class="flex items-center gap-2 text-gray-600 hover:text-blue-600 mb-6"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          <span></span>
-        </button>
+            <!-- Back Arrow SVG -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            <span></span>
+          </button>
 
-        <h2 class="text-2xl font-bold mb-6">Complete Your Payment</h2>
+          <div class="flex justify-between">
+            <div class="flex gap-2 mb-4 mt-2">
+              <div
+                class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-cyan-400 text-cyan-400 font-bold text-lg"
+              >
+                P
+              </div>
+              <h2 class="text-2xl text-cyan-400">Payverge</h2>
+            </div>
 
-        <!-- User + Amount -->
-        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="top-2 right-10">
+              <div class="flex justify-between space-x-2">
+                <p class="block text-gray-600">Email:</p>
+                <input
+                  id="email"
+                  type="email"
+                  readonly
+                  class="rounded-lg cursor-not-allowed"
+                />
+              </div>
+              <div class="flex justify-between space-x-2">
+                <div class="flex justify-between space-x-2">
+                  <label class="block text-gray-600">Pay</label>
+                </div>
+                <input
+                  id="amount"
+                  type="text"
+                  readonly
+                  class="w-full block text-green-600  rounded-lg cursor-not-allowed"
+                />
+              </div>
+            </div>
+          </div>
+
+          <span class="text-2xl font-bold top-2">Complete Your Payment</span>
+
+          <!-- <h2 class="text-2xl font-bold mb-6">Complete Your Payment</h2> -->
+
+          <!-- User + Amount -->
+
+          <!-- <div class="grid md:grid-cols-2 gap-4 mb-6">
           <div>
             <label class="block text-gray-600 mb-1">Email</label>
             <input
@@ -72,7 +219,7 @@
               type="email"
               readonly
               class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
-            />
+              />
           </div>
           <div>
             <label class="block text-gray-600 mb-1">Amount (NGN)</label>
@@ -83,103 +230,141 @@
               class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
             />
           </div>
-        </div>
+        </div> -->
 
-        <!-- Card MOCK -->
-        <div id="card-mock" class="mb-6">
-          <div
-            class="rounded-xl p-5 bg-gradient-to-r from-slate-800 to-slate-600 text-white shadow-md max-w-md"
-          >
-            <div class="text-xs opacity-80">VIRTUAL CARD</div>
-            <div id="mock-number" class="text-xl tracking-widest mt-3">
-              ####-####-####-####
+          <!-- Card MOCK -->
+          <div id="card-mock" class="mb-6">
+            <div
+              class="rounded-xl p-5 bg-gradient-to-r from-slate-800 to-slate-600 text-white shadow-md max-w-md"
+            >
+              <div class="text-xs opacity-80">VIRTUAL CARD</div>
+              <div id="mock-number" class="text-xl tracking-widest mt-3">
+                ####-####-####-####
+              </div>
+              <div class="flex justify-between mt-3 text-sm opacity-90">
+                <div>EXP: <span id="mock-exp">MM/YY</span></div>
+                <div>CVV: <span id="mock-cvv">***</span></div>
+              </div>
+              <div class="mt-4 text-xs opacity-80">NGN Payment</div>
             </div>
-            <div class="flex justify-between mt-3 text-sm opacity-90">
-              <div>EXP: <span id="mock-exp">MM/YY</span></div>
-              <div>CVV: <span id="mock-cvv">***</span></div>
-            </div>
-            <div class="mt-4 text-xs opacity-80">NGN Payment</div>
           </div>
-        </div>
 
-        <!-- CARD FORM -->
-        <div id="form-card" class="space-y-4">
-          <div>
-            <label class="block text-gray-600 mb-1">Card Number</label>
-            <input
-              id="card-number"
-              type="text"
-              inputmode="numeric"
-              autocomplete="cc-number"
-              placeholder="1234-5678-9012-3456"
-              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-            <p id="err-card" class="text-red-600 text-sm mt-1 hidden">
-              Invalid card number.
-            </p>
-          </div>
-          <div class="flex gap-4">
-            <div class="flex-1">
-              <label class="block text-gray-600 mb-1">Expiry (MM/YY)</label>
+          <!-- CARD FORM -->
+          <div id="form-card" class="space-y-4">
+            <div>
+              <label class="block text-gray-600 mb-1">Card Number</label>
               <input
-                id="expiry"
+                id="card-number"
                 type="text"
                 inputmode="numeric"
-                autocomplete="cc-exp"
-                placeholder="MM/YY"
+                autocomplete="cc-number"
+                placeholder="1234-5678-9012-3456"
                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-              <p id="err-exp" class="text-red-600 text-sm mt-1 hidden">
-                Expiry date is invalid or past.
+              <p id="err-card" class="text-red-600 text-sm mt-1 hidden">
+                Invalid card number.
               </p>
             </div>
-            <div class="flex-1">
-              <label class="block text-gray-600 mb-1">CVV</label>
-              <input
-                id="cvv"
-                type="password"
-                inputmode="numeric"
-                autocomplete="cc-csc"
-                placeholder="123"
-                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-              <p id="err-cvv" class="text-red-600 text-sm mt-1 hidden">
-                CVV must be 3 digits.
-              </p>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <label class="block text-gray-600 mb-1">Expiry (MM/YY)</label>
+                <input
+                  id="expiry"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="cc-exp"
+                  placeholder="MM/YY"
+                  class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <p id="err-exp" class="text-red-600 text-sm mt-1 hidden">
+                  Expiry date is invalid or past.
+                </p>
+              </div>
+              <div class="flex-1">
+                <label class="block text-gray-600 mb-1">CVV</label>
+                <input
+                  id="cvv"
+                  type="password"
+                  inputmode="numeric"
+                  autocomplete="cc-csc"
+                  placeholder="123"
+                  class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <p id="err-cvv" class="text-red-600 text-sm mt-1 hidden">
+                  CVV must be 3 digits.
+                </p>
+              </div>
+            </div>
+            <button
+              id="pay-now"
+              class="w-full mt-2 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+            >
+              <span class="btn-text">Pay Now</span>
+              <svg
+                class="animate-spin h-5 w-5 hidden"
+                id="btn-spinner"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  opacity=".25"
+                ></circle>
+                <path
+                  d="M4 12a8 8 0 018-8"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  opacity=".75"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <div id="form-transfer" class="space-y-6 hidden">
+            <!-- TRANSFER FORM -->
+            <!-- Transfer Header -->
+            <!-- <h2 class="text-xl font-semibold text-gray-800 text-center">
+            Complete Your Transfer
+          </h2> -->
+
+            <div
+              class="bg-white shadow-md rounded-lg p-4 space-y-3 text-center"
+            >
+              <p class="text-gray-600">Transfer amount</p>
+              <h3 id="amount" class="text-2xl font-bold text-green-600"></h3>
+
+              <div class="border-t pt-3 space-y-2">
+                <p class="text-gray-600">Account Number</p>
+                <h4
+                  id="account-number"
+                  class="text-lg font-semibold text-gray-900"
+                ></h4>
+
+                <p class="text-gray-600">Bank Name</p>
+                <h4
+                  id="bank-name"
+                  class="text-lg font-semibold text-gray-900"
+                ></h4>
+              </div>
+            </div>
+
+            <div class="flex justify-center">
+              <button
+                id="confirm-transfer"
+                class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md"
+              >
+                I have sent the money
+              </button>
             </div>
           </div>
-          <button
-            id="pay-now"
-            class="w-full mt-2 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
-          >
-            <span class="btn-text">Pay Now</span>
-            <svg
-              class="animate-spin h-5 w-5 hidden"
-              id="btn-spinner"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-                opacity=".25"
-              ></circle>
-              <path
-                d="M4 12a8 8 0 018-8"
-                stroke="currentColor"
-                stroke-width="4"
-                opacity=".75"
-              ></path>
-            </svg>
-          </button>
-        </div>
 
-        <!-- TRANSFER FORM -->
-        <div id="form-transfer" class="space-y-4 hidden">
+          <!-- TRANSFER FORM -->
+          <!-- <div id="form-transfer" class="space-y-4 hidden">
           <div>
             <label class="block text-gray-600 mb-1">Account Number</label>
             <input
@@ -193,8 +378,8 @@
           <div>
             <label class="block text-gray-600 mb-1">Bank Name</label>
             <input
-              id="bank-name"
-              type="text"
+            id="bank-name"
+            type="text"
               placeholder="Access Bank"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             />
@@ -205,28 +390,31 @@
           >
             Make Transfer
           </button>
-        </div>
+        </div> -->
 
-        <!-- WALLET FORM -->
-        <div id="form-wallet" class="space-y-4 hidden">
-          <div>
-            <label class="block text-gray-600 mb-1">Wallet ID / Email</label>
-            <input
-              id="wallet-id"
-              type="text"
-              placeholder="wallet@example.com"
-              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+          <!-- WALLET FORM -->
+          <div id="form-wallet" class="space-y-4 hidden">
+            <div>
+              <label class="block text-gray-600 mb-1">Wallet ID / Email</label>
+              <input
+                id="wallet-id"
+                type="text"
+                placeholder="wallet@example.com"
+                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              id="wallet-btn"
+              class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded w-full"
+            >
+              Pay from Wallet
+            </button>
           </div>
-          <button
-            id="wallet-btn"
-            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded w-full"
-          >
-            Pay from Wallet
-          </button>
         </div>
       </div>
     </div>
+
+    <!-- <script src="../static/payment.js"></script> -->
 
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
@@ -234,8 +422,14 @@
         console.log(url);
 
         const id = url.split("id=")[1];
-        console.log(id)
-        
+        console.log(id);
+
+        let loader = document.querySelector(".loader");
+        let whole_form = document.querySelector("#whole_form");
+        let everything = document.querySelector(".everything");
+        let amountValue = document.querySelector("#amount");
+        console.log(loader, whole_form);
+
         // const database =[
         //   {
         //     id: 987654321,
@@ -252,32 +446,36 @@
         //     createdAt: "Tue 17 aug, 2008"
         //   }
         // ]
-        async function fetchDataFromPaymentId(payment_id){
-       
-          if(!payment_id){
-            return "Input Payment Id"
+        async function fetchDataFromPaymentId(payment_id) {
+          if (!payment_id) {
+            return "Input Payment Id";
           }
-          const response  = await fetch(`http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`)
-          const data = await response.json()
-          return data
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`
+          );
+          const data = await response.json();
+          return data;
+          console.log(data.message);
           // check db
-        // const getPayment = database.filter((payment) => payment.payment_id === payment_id)
-        // if(getPayment[0] === undefined){
-        //   return `Payment wuth the ID: ${payment_id} not found`
-        // }
-        // return getPayment[0];
+          // const getPayment = database.filter((payment) => payment.payment_id === payment_id)
+          // if(getPayment[0] === undefined){
+          //   return `Payment wuth the ID: ${payment_id} not found`
+          // }
+          // return getPayment[0];
         }
 
-        const {email:userEmail, amount:userAmount} = await fetchDataFromPaymentId(id);
+        const { email: userEmail, amount: userAmount } =
+          await fetchDataFromPaymentId(id);
 
         const user = JSON.parse(localStorage.getItem("user"));
         // if (!user) {
         //   window.location.href = "/static/index.html";
         //   return;
         // }
-        document.getElementById("email").value = userEmail || user.email
+        document.getElementById("email").value = userEmail || user.email;
         const qp = new URLSearchParams(location.search);
-        document.getElementById("amount").value = qp.get("amount") || userAmount;
+        document.getElementById("amount").value =
+          qp.get("amount") || userAmount;
 
         // ========= Tabs =========
         let tabCard = document.querySelector("#tab-card");
@@ -353,7 +551,7 @@
         });
 
         expiry.addEventListener("input", () => {
-          let val = expiry.value.replace(/\D/g, ""); // keep digits only
+          let val = expiry.value.replace(/\D/g, "");
           if (val.length === 2 && !expiry.value.includes("/")) {
             // Add slash immediately after 2 digits entered
             val = val + "/";
@@ -439,7 +637,7 @@
           makePayment(
             {
               method: "card",
-              amount: parseFloat(document.getElementById("amount").value),
+              amount: Number(document.getElementById("amount").value),
               currency: "NGN",
               card_number: raw,
               expiry: expiry.value,
@@ -449,35 +647,112 @@
           );
         });
 
+
         // ========= Transfer Submit with Validation =========
         document
-          .getElementById("transfer-btn")
-          .addEventListener("click", () => {
-            const accountNum = document.getElementById("account-number");
-            const bankName = document.getElementById("bank-name");
-            let valid = true;
+          .querySelector("#tab-transfer")
+          .addEventListener("click", async () => {
+            // console.log("clicked");
+            loader.classList.remove("hidden");
+            everything.classList.add("hidden");
+            whole_form.classList.add("items-center");
+            whole_form.classList.add("justify-center");
 
-            [accountNum, bankName].forEach((input) => {
-              input.classList.remove("border-red-500");
-              if (!input.value.trim()) {
-                input.classList.add("border-red-500");
-                valid = false;
+            try {
+              let amount = Number(document.getElementById("amount").value);
+              // const token = localStorage.getItem("authToken");
+
+              // if (!token) {
+              //   alert("You must login first!");
+              //   return;
+              // }
+
+              const payload = { amount };
+              console.log("amount", payload);
+
+              let loginUrl =
+                "https://blink-pay-bank-app-backend.onrender.com/api/v1/auth/login";
+
+              const login = await fetch(loginUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: "ezecharity194@gmail.com",
+                  password: "boggie",
+                }),
+              });
+
+              const loginResponse = await login.json();
+
+              console.log(loginResponse);
+
+              let token = loginResponse?.token;
+
+              const res = await fetch(
+                "https://blink-pay-bank-app-backend.onrender.com/api/v1/account/create-virtual-account",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify(payload),
+                }
+              );
+
+              const data = await res.json();
+              console.log({ data });
+              console.log(amountValue)
+
+              if (data.virtual_account.acc_number) {
+                amountValue.value = data.virtual_account.amount;
+                loader.classList.add("hidden");
+                everything.classList.remove("hidden");
+                whole_form.classList.remove("items-center");
+                whole_form.classList.remove("justify-center");
               }
-            });
 
-            if (!valid) return;
+              if (!res.ok) {
+                console.log(data);
+                throw new Error(data.msg || "Request failed");
+              }
+              let {
+                acc_number,
+                bank_name,
+                amount: generatedAmount,
+              } = data.virtual_account;
+              let accNumber = document.querySelector("#account-number");
+              let bankName = document.querySelector("#bank-name");
+              let amountPassed = document.querySelector("#amount");
+              accNumber.textContent = acc_number;
+              bankName.textContent = bank_name;
+              amountPassed.textContent = generatedAmount;
 
-            makePayment(
-              {
-                method: "transfer",
-                amount: parseFloat(document.getElementById("amount").value),
-                currency: "NGN",
-                account_number: accountNum.value,
-                bank_name: bankName.value,
-              },
-              document.getElementById("transfer-btn"),
-              "Make Transfer"
-            );
+              // alert(
+              //   `Transfer NGN${generatedAmount} to:\n\nAccount Number: ${acc_number}\nBank: ${bank_name}`
+              // );
+
+              // alert(`${data.msg || "Check response"}`);
+              console.log("Response:", data);
+            } catch (err) {
+              loader.classList.add("hidden");
+              everything.classList.add("hidden");
+              whole_form.classList.remove("items-center");
+              whole_form.classList.remove("justify-center");
+              console.error(err);
+              // alert(err.message);
+              whole_form.textContent = "Try again later";
+            }
+            document
+              .querySelector("#confirm-transfer")
+              .addEventListener("click", () => {
+                console.log("clicked");
+              });
+          });
+          document.querySelector("#confirm-transfer").addEventListener("click", ()=>{
+            console.log("clicked")
           });
 
         // ========= Wallet Submit with Validation =========
@@ -506,7 +781,8 @@
         });
       });
       document.getElementById("back-btn").addEventListener("click", () => {
-        window.location.href = "http://127.0.0.1:5500/Frontend/html/userdashboard.html"; 
+        window.location.href =
+          "http://127.0.0.1:5500/Frontend/html/userdashboard.html";
       });
     </script>
   </body>

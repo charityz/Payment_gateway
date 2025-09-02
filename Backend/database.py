@@ -26,6 +26,7 @@ db = client["paymentgateway"]
 users_collection = db["users"]
 payments_collection = db["payments"]
 make_payments_collection = db["Make_payments"]
+notifications_collection = db["Notifications"]
 
 if client:
     print("mongodb connected")

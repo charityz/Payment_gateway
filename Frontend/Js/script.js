@@ -286,6 +286,7 @@ function attachOtpHandlers() {
           id: data.id,
           name: data.name,
           email: data.email,
+          created_at: data.created_at
         })
       );
 
@@ -306,7 +307,7 @@ function attachOtpHandlers() {
   </div>
 `
       );
-
+localStorage.setItem("logins")
       setTimeout(() => {
         document.querySelector(".alert.alert-success")?.remove();
       }, 2000);

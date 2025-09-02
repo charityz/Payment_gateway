@@ -1,12 +1,12 @@
-from fastapi import APIRouter, HTTPException, Response, Request, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Response, Request, BackgroundTasks, Query
 from Backend.utils import create_access_token, hash_password, send_email_with_default_password, generate_access_code, generate_reference
 from passlib.context import CryptContext 
-from Backend.database import users_collection, EXPIRY_MINUTES, SECRET_KEY, encrypt_pending_data, decrypt_pending_data
+from Backend.database import users_collection, EXPIRY_MINUTES, SECRET_KEY, encrypt_pending_data, decrypt_pending_data, notifications_collection
 from Backend.Schemas.schemas import *
 from datetime import datetime
 from datetime import datetime, timedelta
 from Backend.Emails_otp.email import generate_otp, send_otp_email
-import json
+from bson import ObjectId
 import traceback
 
 
@@ -19,7 +19,6 @@ auth_router = APIRouter()
 async def register_user(user: UserRegister, response: Response, background_task: BackgroundTasks):
     try:
         print("Starting registration...")
-
         # Validate required fields
         if not all([
             user.first_name.strip(),
@@ -120,12 +119,22 @@ async def verify_registration_otp(data: dict, request: Request, response: Respon
         "is_verified": True
     })
 
+# Generate and set access token
+    token_data = {"email": pending_data["email"]}
+    access_token = create_access_token(token_data)
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=3600
+    )
     # Clear cookie
     response.delete_cookie("pending_registration")
+    
 
-    return {"message": "Registration completed successfully"}
-
-
+    return {"message": "Registration completed successfully",  "access_token": access_token }
 
 
 # SIGN-IN
@@ -163,7 +172,6 @@ async def signin(user: SignIn):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Signin failed: {str(e)}")
-
 
 
 # VERIFY SIGN IN OTP 
@@ -213,11 +221,9 @@ async def verify_login_otp(data: dict, response: Response):
         "message": "Login successful",
         "email": email,
         "id": str(user["_id"]),
-        "name": user.get("last_name", "")
-        
+        "name": user.get("last_name", ""),
+        "access_token": access_token 
     }
-
-
 
 
 # DEFAULT PASSWORD
@@ -254,7 +260,7 @@ async def default_password(data: dict):
     return {"message": "Default password sent to your email."}
 
 
-
+# VERIFY DEFAULT PASSWORD
 @auth_router.post("/api/v1/verify_default_password")
 async def verify_default_password(data: dict, response: Response):
     email = data.get("email")
@@ -304,4 +310,37 @@ async def verify_default_password(data: dict, response: Response):
     }
 
 
+# NOTIFICATIONS
+@auth_router.post("/api/v1/notifications", response_model=NotificationOut)
+async def create_notification(note: NotificationIn):
+   
+    try:
+        user_obj_id = ObjectId(note.user_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid user_id format")
 
+   
+    user = await users_collection.find_one({"_id": user_obj_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+
+    doc = note.dict()
+    doc.update({"status": "unread", "created_at": datetime.now()})
+
+    result = await notifications_collection.insert_one(doc)
+    doc["id"] = str(result.inserted_id)
+
+    return NotificationOut(**doc)
+
+
+
+@auth_router.get("/api/v1/notifications")
+async def get_notifications(user_id: str = Query(...)):
+    # Check if user exists
+    if not ObjectId.is_valid(user_id) or not users_collection.find_one({"_id": ObjectId(user_id)}):
+        raise HTTPException(status_code=404, detail="User not found")
+
+    notes = list(notifications_collection.find({"user_id": user_id}, {"_id": 0}))
+    return notes
+    

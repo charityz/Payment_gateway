@@ -661,8 +661,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       openOtpModal({ type: "login", email });
 
     } catch (err) {
+      console.log(err.message)
       console.log("Error sending OTP:", err);
-      alert(err.response.data.detail || errors.login);
+      alert(err.message || errors.login);
     } finally {
       loginSpinner.classList.add("hidden");
       loginText.textContent = "Login";

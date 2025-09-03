@@ -18,6 +18,21 @@ app = FastAPI()
 BASE_DIR = r"C:\Users\HP\Desktop\Payment_gateway\Backend"
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
+
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+app.mount(
+    "/.well-known",
+    StaticFiles(directory="frontend/.well-known"),
+    name="well_known"
+)
+
+
+# /static/.well-known/appspecific/com.chrome.devtools.json
+# frontend/.well-known/appspecific/com.chrome.devtools.json
+
+
 
 activities = [
     {"id": 1, "name": "Payment Processed", "status": "Success", "date": "2025-08-18"},

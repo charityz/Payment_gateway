@@ -1,0 +1,4 @@
+from fastapi.staticfiles import StaticFiles
+
+
+app.mount("/static", StaticFiles(directory="frontend"), name="static")

@@ -4,6 +4,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from Backend.utils import verify_token
 from Backend.Routes.auth import users_collection
 
+
 class JWTMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.method == "OPTIONS":
@@ -12,6 +13,15 @@ class JWTMiddleware(BaseHTTPMiddleware):
         public_paths = ["/api/v1/signin",   "/api/v1/register_user", "/api/v1/verify_otp", "/api/v1/verify_registration_otp","/api/v1/show_payment", "/api/v1/get_payment"]
         if request.url.path in public_paths:
             return await call_next(request)
+        
+        skip_paths = [
+            "/favicon.ico",
+            "/.well-known",
+            "/static"
+        ]
+        if any(request.url.path.startswith(path) for path in skip_paths):
+            return await call_next(request)
+
 
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
@@ -29,3 +39,27 @@ class JWTMiddleware(BaseHTTPMiddleware):
 
         request.state.user = payload
         return await call_next(request)
+
+
+
+
+# class AuthMiddleware(BaseHTTPMiddleware):
+#     async def dispatch(self, request: Request, call_next):
+#         # Paths to skip authentication
+#         skip_paths = [
+#             "/favicon.ico",
+#             "/.well-known/appspecific/com.chrome.devtools.json",
+#             "/static"  
+#         ]
+
+#         if any(request.url.path.startswith(path) for path in skip_paths):
+#             return await call_next(request)
+
+#         # Your existing auth check
+#         auth_header = request.headers.get("Authorization")
+#         if not auth_header:
+#             return JSONResponse({"detail": "Unauthorized"}, status_code=401)
+
+#         # Continue normally
+#         response = await call_next(request)
+#         return response

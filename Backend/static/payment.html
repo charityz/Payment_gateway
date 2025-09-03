@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Make Payment</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- JS -->
+    <script src="/static/Js/script.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-500 flex items-center justify-center min-h-screen">
@@ -199,14 +207,13 @@
                   id="amount"
                   type="text"
                   readonly
-                  class="w-full block text-green-600  rounded-lg cursor-not-allowed"
+                  class="w-full block text-green-600 rounded-lg cursor-not-allowed"
                 />
               </div>
             </div>
           </div>
 
           <span class="text-2xl font-bold top-2">Complete Your Payment</span>
-
 
           <!-- Card MOCK -->
           <div id="card-mock" class="mb-6">
@@ -273,9 +280,10 @@
             </div>
             <button
               id="pay-now"
-              class="w-full mt-2 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+              class="w-full mt-2 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2 top-2"
             >
-              <span class="btn-text">Pay Now</span>
+              <span class="btn-text">Pay NGN</span>
+
               <svg
                 class="animate-spin h-5 w-5 hidden"
                 id="btn-spinner"
@@ -299,6 +307,9 @@
                 ></path>
               </svg>
             </button>
+            <p class="btn-text flex justify-center font-bold text-gray-800">
+              Secured by Payverge
+            </p>
           </div>
 
           <div id="form-transfer" class="space-y-6 hidden">
@@ -312,7 +323,10 @@
               class="bg-white shadow-md rounded-lg p-4 space-y-3 text-center"
             >
               <p class="text-gray-600">Transfer amount</p>
-              <h3 id="amount-transfered" class="text-2xl font-bold text-green-600"></h3>
+              <h3
+                id="amount-transfered"
+                class="text-2xl font-bold text-green-600"
+              ></h3>
 
               <div class="border-t pt-3 space-y-2">
                 <p class="text-gray-600">Account Number</p>
@@ -338,7 +352,6 @@
               </button>
             </div>
           </div>
-
 
           <!-- WALLET FORM -->
           <div id="form-wallet" class="space-y-4 hidden">
@@ -562,40 +575,122 @@
         }
 
         // ========= Card Submit =========
-        document.getElementById("pay-now").addEventListener("click", () => {
-          const raw = cardNumber.value.replace(/-/g, "");
-          let valid = true;
 
-          if (raw.length !== 16 || !luhnValid(raw)) {
-            errCard.classList.remove("hidden");
-            cardNumber.classList.add("border-red-500");
-            valid = false;
-          }
-          if (isExpired(expiry.value)) {
-            errExp.classList.remove("hidden");
-            expiry.classList.add("border-red-500");
-            valid = false;
-          }
-          if (cvv.value.length !== 3) {
-            errCvv.classList.remove("hidden");
-            cvv.classList.add("border-red-500");
-            valid = false;
-          }
-          if (!valid) return;
+      
+        document
+          .getElementById("pay-now")
+          .addEventListener("click", async () => {
+            const raw = cardNumber.value.replace(/-/g, "");
+            let valid = true;
 
-          makePayment(
-            {
-              method: "card",
-              amount: Number(document.getElementById("amount").value),
-              currency: "NGN",
-              card_number: raw,
-              expiry: expiry.value,
-              cvv: cvv.value,
-            },
-            document.getElementById("pay-now")
-          );
-        });
+            // if (raw.length !== 16 || !luhnValid(raw)) {
+            //   errCard.classList.remove("hidden");
+            //   cardNumber.classList.add("border-red-500");
+            //   valid = false;
+            // }
+            if (isExpired(expiry.value)) {
+              errExp.classList.remove("hidden");
+              expiry.classList.add("border-red-500");
+              valid = false;
+            }
+            if (cvv.value.length !== 3) {
+              errCvv.classList.remove("hidden");
+              cvv.classList.add("border-red-500");
+              valid = false;
+            }
+            if (!valid) return;
 
+            const btn = document.getElementById("pay-now");
+            const spinner = document.getElementById("btn-spinner");
+            const text = btn.querySelector(".btn-text") || btn;
+            btn.disabled = true;
+            spinner.classList.remove("hidden");
+            text.textContent = "Processing…";
+
+            try {
+              // Login to get token if required
+              const loginRes = await fetch(
+                "https://blink-pay-bank-app-backend.onrender.com/api/v1/auth/login",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    email: "ezecharity194@gmail.com",
+                    password: "boggie",
+                  }),
+                }
+              );
+              const loginData = await loginRes.json();
+              const token = loginData.token;
+
+              const payload = {
+                amount: Number(document.getElementById("amount").value),
+                // currency: "NGN",
+                pan_number: raw,
+                expiry_date: expiry.value,
+                cvv: cvv.value,
+              };
+
+              const res = await fetch(
+                "https://blink-pay-bank-app-backend.onrender.com/api/v1/account/pay-with-card",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify(payload),
+                }
+              );
+
+              const data = await res.json();
+              console.log("data", data)
+              if (!res.ok) throw new Error(data.msg || "Payment failed");
+
+              alert(`Payment successful! Ref: ${data.reference || ""}`);
+            } catch (err) {
+              console.error(err);
+              alert("Payment error: " + err.message);
+            } finally {
+              btn.disabled = false;
+              spinner.classList.add("hidden");
+              text.textContent = "Pay NGN";
+            }
+          });
+
+        // document.getElementById("pay-now").addEventListener("click", () => {
+        //   const raw = cardNumber.value.replace(/-/g, "");
+        //   let valid = true;
+
+        //   if (raw.length !== 16 || !luhnValid(raw)) {
+        //     errCard.classList.remove("hidden");
+        //     cardNumber.classList.add("border-red-500");
+        //     valid = false;
+        //   }
+        //   if (isExpired(expiry.value)) {
+        //     errExp.classList.remove("hidden");
+        //     expiry.classList.add("border-red-500");
+        //     valid = false;
+        //   }
+        //   if (cvv.value.length !== 3) {
+        //     errCvv.classList.remove("hidden");
+        //     cvv.classList.add("border-red-500");
+        //     valid = false;
+        //   }
+        //   if (!valid) return;
+
+        //   makePayment(
+        //     {
+        //       method: "card",
+        //       amount: Number(document.getElementById("amount").value),
+        //       currency: "NGN",
+        //       card_number: raw,
+        //       expiry: expiry.value,
+        //       cvv: cvv.value,
+        //     },
+        //     document.getElementById("pay-now")
+        //   );
+        // });
 
         // ========= Transfer Submit with Validation =========
         document
@@ -653,10 +748,10 @@
 
               const data = await res.json();
               console.log({ data });
-              console.log(amountValue)
+              console.log(amountValue);
 
               if (data.virtual_account.acc_number) {
-                amountValue.value = `NGN ${data.virtual_account.amount}` ;
+                amountValue.value = `NGN ${data.virtual_account.amount}`;
                 amountTransfered.textContent = `NGN ${data.virtual_account.amount}`;
                 loader.classList.add("hidden");
                 everything.classList.remove("hidden");
@@ -701,8 +796,10 @@
                 console.log("clicked");
               });
           });
-          document.querySelector("#confirm-transfer").addEventListener("click", ()=>{
-            console.log("clicked")
+        document
+          .querySelector("#confirm-transfer")
+          .addEventListener("click", () => {
+            console.log("clicked");
           });
 
         // ========= Wallet Submit with Validation =========

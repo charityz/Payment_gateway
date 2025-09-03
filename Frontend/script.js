@@ -431,7 +431,7 @@ async function loadOtpModal() {
 
   otpModalLoaded = new Promise(async (resolve, reject) => {
     try {
-      const res = await fetch("http://127.0.0.1:5500/Frontend/html/otp_popup.html");
+      const res = await fetch("otp_popup.html");
       if (!res.ok) throw new Error("Failed to load OTP modal");
       const html = await res.text();
       document.body.insertAdjacentHTML("beforeend", html);
@@ -527,7 +527,7 @@ function attachOtpHandlers() {
         otpMessage.textContent = "Login successful!";
         setTimeout(() => {
           close();
-          window.location.href = "/Frontend/html/userdashboard.html";
+          window.location.href = "userdashboard.html";
         }, 1500);
       } else {
         otpMessage.style.color = "green";

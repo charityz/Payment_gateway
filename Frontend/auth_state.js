@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     userAvatar.classList.remove("hidden");
 
     userAvatar.addEventListener("click", () => {
-      window.location.href = "http://127.0.0.1:5500/Frontend/html/userdashboard.html";
+      window.location.href = "userdashboard.html";
     });
   } else {
     userAvatar.classList.add("hidden");
@@ -53,7 +53,7 @@ async function loginUser(email, password) {
 
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    // alert(err.message);
   }
 }
 

@@ -207,30 +207,6 @@
 
           <span class="text-2xl font-bold top-2">Complete Your Payment</span>
 
-          <!-- <h2 class="text-2xl font-bold mb-6">Complete Your Payment</h2> -->
-
-          <!-- User + Amount -->
-
-          <!-- <div class="grid md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label class="block text-gray-600 mb-1">Email</label>
-            <input
-              id="email"
-              type="email"
-              readonly
-              class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
-              />
-          </div>
-          <div>
-            <label class="block text-gray-600 mb-1">Amount (NGN)</label>
-            <input
-              id="amount"
-              type="text"
-              readonly
-              class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
-            />
-          </div>
-        </div> -->
 
           <!-- Card MOCK -->
           <div id="card-mock" class="mb-6">
@@ -336,7 +312,7 @@
               class="bg-white shadow-md rounded-lg p-4 space-y-3 text-center"
             >
               <p class="text-gray-600">Transfer amount</p>
-              <h3 id="amount" class="text-2xl font-bold text-green-600"></h3>
+              <h3 id="amount-transfered" class="text-2xl font-bold text-green-600"></h3>
 
               <div class="border-t pt-3 space-y-2">
                 <p class="text-gray-600">Account Number</p>
@@ -363,34 +339,6 @@
             </div>
           </div>
 
-          <!-- TRANSFER FORM -->
-          <!-- <div id="form-transfer" class="space-y-4 hidden">
-          <div>
-            <label class="block text-gray-600 mb-1">Account Number</label>
-            <input
-              id="account-number"
-              type="text"
-              inputmode="numeric"
-              placeholder="0123456789"
-              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-gray-600 mb-1">Bank Name</label>
-            <input
-            id="bank-name"
-            type="text"
-              placeholder="Access Bank"
-              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button
-            id="transfer-btn"
-            class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded w-full"
-          >
-            Make Transfer
-          </button>
-        </div> -->
 
           <!-- WALLET FORM -->
           <div id="form-wallet" class="space-y-4 hidden">
@@ -428,6 +376,7 @@
         let whole_form = document.querySelector("#whole_form");
         let everything = document.querySelector(".everything");
         let amountValue = document.querySelector("#amount");
+        let amountTransfered = document.querySelector("#amount-transfered");
         console.log(loader, whole_form);
 
         // const database =[
@@ -659,7 +608,7 @@
             whole_form.classList.add("justify-center");
 
             try {
-              let amount = Number(document.getElementById("amount").value);
+              let amount = Number(document.querySelector("#amount").value);
               // const token = localStorage.getItem("authToken");
 
               // if (!token) {
@@ -707,7 +656,8 @@
               console.log(amountValue)
 
               if (data.virtual_account.acc_number) {
-                amountValue.value = data.virtual_account.amount;
+                amountValue.value = `NGN ${data.virtual_account.amount}` ;
+                amountTransfered.textContent = `NGN ${data.virtual_account.amount}`;
                 loader.classList.add("hidden");
                 everything.classList.remove("hidden");
                 whole_form.classList.remove("items-center");
@@ -771,7 +721,7 @@
           makePayment(
             {
               method: "wallet",
-              amount: parseFloat(document.getElementById("amount").value),
+              amount: parseFloat(document.querySelector("amount").value),
               currency: "NGN",
               wallet_id: walletId.value,
             },

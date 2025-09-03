@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     makePayment(
       {
         method: "card",
-        amount: Number(document.getElementById("amount").value),
+        amount: Number(document.querySelector("#amount").value),
         currency: "NGN",
         card_number: raw,
         expiry: expiry.value,
@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("clicked");
 
       try {
-        const amount = Number(document.getElementById("amount").value);
+        const amount = Number(document.querySelector("#amount").value);
         const token = localStorage.getItem("authToken");
 
         if (!token) {
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const payload = { amount };
-        console.log("amount", payload);
+        // console.log("amount", payload);
 
         const res = await fetch(
           "https://blink-pay-bank-app-backend.onrender.com/api/v1/account/create-virtual-account",
@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await res.json();
 
         if (!res.ok) {
-          console.log(data);
+          // console.log(data);
           throw new Error(data.msg || "Request failed");
         }
         let {
@@ -285,8 +285,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
   // ========= Wallet Submit with Validation =========
-  document.getElementById("wallet-btn").addEventListener("click", () => {
-    const walletId = document.getElementById("wallet-id");
+  document.querySelector("#wallet-btn").addEventListener("click", () => {
+    const walletId = document.querySelector("#wallet-id");
     let valid = true;
 
     walletId.classList.remove("border-red-500");
@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     makePayment(
       {
         method: "wallet",
-        amount: parseFloat(document.getElementById("amount").value),
+        amount: parseFloat(document.querySelector("#amount").value),
         currency: "NGN",
         wallet_id: walletId.value,
       },

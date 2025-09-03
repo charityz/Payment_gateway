@@ -150,7 +150,7 @@ async def signin(user: SignIn):
     try:
         db_user = await users_collection.find_one({"email": user.email})
         if not db_user:
-            raise HTTPException(status_code=401, detail="Invalid email")
+            raise HTTPException(status_code=401, detail="Invalid email, Kindly register")
 
         otp_code = await generate_otp()
         otp_created_at = datetime.now()

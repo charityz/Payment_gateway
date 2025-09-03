@@ -626,6 +626,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   let loginSpinner = document.querySelector("#login-spinner");
   let loginBtn = document.querySelector("#loginbtn");
   let loginText = document.querySelector("#login-text");
+  let errors = {
+    login: "Error- Invalid Email, Kindly register"
+  }
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -657,8 +660,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       openOtpModal({ type: "login", email });
 
     } catch (err) {
-      console.error("Error sending OTP:", err);
-      alert("An error occurred, please try again");
+      console.log("Error sending OTP:", err);
+      alert(err.response.data.detail || errors.login);
     } finally {
       loginSpinner.classList.add("hidden");
       loginText.textContent = "Login";

@@ -52,7 +52,7 @@ async function loginUser(email, password) {
     return data.token;
 
   } catch (err) {
-    console.error(err);
+    console.log(err);
     // alert(err.message);
   }
 }

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from pydantic import BaseModel
-from typing import Literal
+from typing import Literal, List
 from datetime import datetime
 
 class UserRegister(BaseModel):
@@ -62,5 +62,27 @@ class NotificationOut(NotificationIn):
     created_at: datetime
    
     
+# Request model
+# class TransactionCheck(BaseModel):
+#     transaction_id: str
+
+# # Response model with fixed statuses
+# class TransactionResponse(BaseModel):
+#     transaction_id: str
+#     status: Literal["success", "pending", "failed"]
     
     
+# Your existing response model
+class TransactionResponse(BaseModel):
+    transaction_id: str
+    status: Literal["success", "pending", "failed"]
+    amount: float
+    description: Optional[str] = None
+    created_at: str
+
+# Paginated response
+class PaginatedTransactions(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    transactions: List[TransactionResponse]

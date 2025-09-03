@@ -17,7 +17,7 @@
         >
           P
         </div>
-        <h2 class="text-2xl font-bold">Payverge</h2>
+        <h2 class=" border-cyan-400 text-cyan-400 text-2xl font-bold">Payverge</h2>
       </div>
       <nav class="flex-1">
         <ul class="space-y-2">
@@ -33,8 +33,9 @@
           </li>
           <li>
             <a
-              href="transactions.html"
+              href="http://127.0.0.1:5500/Frontend/transactions/transaction.html"
               class="flex items-center p-2 rounded hover:bg-blue-100"
+              id="transaction"
             >
               📄 <span class="ml-2">Transactions</span>
             </a>
@@ -76,7 +77,7 @@
           </li>
           <li>
             <a
-              href="make_payment2.htmll"
+              href="http://127.0.0.1:8000/api/v1/get_payment?id=c7dd7e3a-833c-11f0-8326-a434d9b61f01"
               class="flex items-center p-2 rounded hover:bg-blue-100"
               id="makePaymentBtn"
             >
@@ -108,11 +109,12 @@
           <h3 class="text-lg font-semibold">Recent Logins</h3>
           <p class="text-gray-600" id="recentLogins">Loading...</p>
         </div>
+
         <div class="bg-white p-4 rounded shadow">
           <h3 class="text-lg font-semibold">Notifications</h3>
           <p class="text-gray-600" id="notifications">No new alerts</p>
         </div>
-        <div class="bg-white p-4 rounded shadow">
+        <!-- <div class="bg-white p-4 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Make a Payment</h3>
           <button
             id="makePaymentBtn"
@@ -120,7 +122,7 @@
           >
             💳 Pay Now
           </button>
-        </div>
+        </div> -->
       </section>
 
       <!-- Chart -->

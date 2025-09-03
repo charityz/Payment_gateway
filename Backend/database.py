@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
+from itsdangerous import URLSafeTimedSerializer
 import os
 
 load_dotenv()
@@ -27,6 +28,7 @@ users_collection = db["users"]
 payments_collection = db["payments"]
 make_payments_collection = db["Make_payments"]
 notifications_collection = db["Notifications"]
+transactions_collection = db["transactions"]
 
 if client:
     print("mongodb connected")
@@ -34,8 +36,7 @@ else:
     print("failed to connect to mongodb")
 
 
-from itsdangerous import URLSafeTimedSerializer
-import os
+
 
 # Use a secret key from your env file
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")

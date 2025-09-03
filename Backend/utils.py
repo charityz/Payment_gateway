@@ -36,13 +36,30 @@ def generate_access_code():
     return "ACC-" + "".join(random.choices(string.ascii_uppercase + string.digits, k=12))
 
 
+# def verify_token(token: str):
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         return payload
+#     except JWTError:
+#         return None
+    
+    
 def verify_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
+        user_id: str = payload.get("id")
+        email: str = payload.get("email")
+
+        if user_id is None or email is None:
+            return None  # token is invalid if claims are missing
+
+        return {
+            "id": user_id,
+            "email": email
+        }
+
     except JWTError:
         return None
-    
     
     
 async def send_otp_email(receiver_email: str, otp: str):

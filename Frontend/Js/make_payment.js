@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   document.getElementById("email").value = userEmail || user.email;
   const qp = new URLSearchParams(location.search);
-  document.querySelector("#amount-transfered").value || 10000;
+  document.querySelector("#amount").value || 10000;
 
   // ========= Tabs =========
   let tabCard = document.querySelector("#tab-card");
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     makePayment(
       {
         method: "card",
-        amount: Number(document.getElementById("amount-transfered")),
+        amount: Number(document.querySelector("#amount")),
         currency: "NGN",
         card_number: raw,
         expiry: expiry.value,
@@ -211,10 +211,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.querySelector("#tab-transfer")
   .addEventListener("click", async () => {
-    console.log("clicked");
+    // console.log("clicked");
    
     try {
-      const amount = Number(document.getElementById("amount-transfered").value);
+      const amount = Number(document.querySelector("#amount").value);
       const token = localStorage.getItem("authToken");
 
       
@@ -224,7 +224,7 @@ document.querySelector("#tab-transfer")
       }
 
       const payload = {amount};
-      console.log("amount", payload)
+      // console.log("amount", payload)
 
       const res = await fetch(
         "https://blink-pay-bank-app-backend.onrender.com/api/v1/account/create-virtual-account",
@@ -241,13 +241,13 @@ document.querySelector("#tab-transfer")
       const data = await res.json();
 
       if (!res.ok) {
-        console.log(data)
+        // console.log(data)
         throw new Error(data.msg || "Request failed");
       }
       let {acc_number, bank_name, amount: generatedAmount } = data.virtual_account;
       let accNumber = document.querySelector("#account-number");
       let bankName = document.querySelector("#bank-name");
-      let amountPassed = document.querySelector("#amount-transfered");
+      let amountPassed = document.querySelector("#amount");
       accNumber.textContent = acc_number;
       bankName.textContent = bank_name;
       amountPassed.textContent = generatedAmount;
@@ -258,14 +258,14 @@ document.querySelector("#tab-transfer")
       // );
 
       // alert(`${data.msg || "Check response"}`);
-      console.log("Response:", data);
+      // console.log("Response:", data);
 
     } catch (err) {
       console.error(err);
       alert(err.message);
     }
     document.querySelector("#confirm-transfer").addEventListener("click", ()=>{
-      console.log("clicked")
+      // console.log("clicked")
     })
   });
 

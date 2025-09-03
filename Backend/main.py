@@ -35,7 +35,7 @@ activities = [
 ]
 
 transactions = [
-    {"id": 1, "type": "card", "amount": 500, "date": "2025-08-17"},
+    {"transaction_id": "TXN123","id": 1, "type": "card", "amount": 500, "date": "2025-08-17"},
     {"id": 2, "type": "card", "amount": 200, "date": "2025-08-17"},
     {"id": 3, "type": "Transfer", "amount": 350, "date": "2025-08-18"},
     {"id": 4, "type": "wallet", "amount": 800, "date": "2025-08-18"},
@@ -46,18 +46,16 @@ transactions = [
 ]
 
 origins = [
-    "http://127.0.0.1:5500",  # your frontend
-    "http://localhost:5500",  # optional variant
-    "http://127.0.0.1:3000",  # if React dev server
-    "http://localhost:3000"
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,        # Only allow these origins
-    allow_credentials=True,       # Important for cookies
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],         # Allow all headers
+    allow_origins=origins,  # or ["*"] to allow all
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -67,6 +65,7 @@ app.include_router(auth.auth_router)
 app.include_router(card.auth_router)
 app.include_router(makepayment.auth_router)
 app.include_router(generate_paymentId.auth_router)
+# app.include_router(notifications.auth_router)
 
 
 auth_router = APIRouter()

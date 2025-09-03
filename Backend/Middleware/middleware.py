@@ -6,6 +6,8 @@ from Backend.Routes.auth import users_collection
 
 class JWTMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        if request.method == "OPTIONS":
+            return await call_next(request)
         # public_paths = ["/api/v1/signin","/api/v1/add_card","/api/v1/generate_payment", "/api/v1/register_user", "/api/v1/verify_otp", "/api/v1/verify_registration_otp",  "/api/v1/default_password", "/api/v1/verify_default_password", "/api/v1/activities", "/api/v1/transactions","/api/v1/make_payment","/api/v1/get_payment","/api/v1/show_payment" ]
         public_paths = ["/api/v1/signin",   "/api/v1/register_user", "/api/v1/verify_otp", "/api/v1/verify_registration_otp","/api/v1/show_payment", "/api/v1/get_payment"]
         if request.url.path in public_paths:

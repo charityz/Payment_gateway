@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transactions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <div class="p-4">
+  <h2 class="text-lg font-bold mb-4">Transaction History</h2>
+  
+  <div class="flex justify-between items-center mb-4">
+    <input type="text" id="searchBox" placeholder="Search transactions..."
+      class="border rounded px-5 py-3 w-1/7">
+    
+    <select id="statusFilter" class="border rounded px-3 py-2">
+      <option value="">All</option>
+      <option value="success">Success</option>
+      <option value="pending">Pending</option>
+      <option value="failed">Failed</option>
+    </select>
+  </div>
+
+  <table class="w-full border">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-2 text-left">ID</th>
+        <th class="p-2 text-left">Amount</th>
+        <th class="p-2 text-left">Status</th>
+        <th class="p-2 text-left">Date</th>
+      </tr>
+    </thead>
+    <tbody id="transactionTable"></tbody>
+  </table>
+
+  <div class="flex justify-between mt-4">
+    <button id="prevPage" class="px-4 py-2 bg-gray-200 rounded">Prev</button>
+    <button id="nextPage" class="px-4 py-2 bg-gray-200 rounded">Next</button>
+  </div>
+</div>
+
+    <!-- <h2 class="text-2xl font-bold mb-6">Transactions</h2>
+
+    <section class="bg-white p-4 rounded shadow w-full max-w-4xl mb-6">
+      <h3 class="text-lg font-semibold mb-4">Transactions Overview</h3>
+      <canvas id="transactionsChart" height="80"></canvas>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow w-full max-w-4xl">
+      <h3 class="text-lg font-semibold mb-4">Transaction History</h3>
+      <table class="w-full border-collapse border border-gray-200">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border p-2">Transaction ID</th>
+            <th class="border p-2">Type</th>
+            <th class="border p-2">Amount</th>
+            <th class="border p-2">Date</th>
+            <th class="border p-2">Status</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsTable"></tbody>
+      </table>
+    </section>
+ -->
+    <script src="../transactions/transaction.js"></script>
+  </body>
+</html>

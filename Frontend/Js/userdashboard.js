@@ -3,10 +3,35 @@ let makePaymentButton = document.querySelector("#makePaymentBtn");
 
 let loginTime = JSON.parse(localStorage.getItem("dateTimeData"));
 
-makePaymentButton.addEventListener("click", () => {
-  //   window.location.href = "http://127.0.0.1:5500/Frontend/html/make_payment2.html"
-});
-console.log("clicked");
+// let id = JSON.parse(localStorage.getItem("id"));
+
+//   let loginToken = localStorage.getItem("token") || localStorage.getItem("authToken")
+//   console.log(loginToken)
+
+//   async function fetchDataFromPaymentId(payment_id) {
+    
+//     if (!payment_id) {
+//       return "Input Payment Id";
+//     }
+//     const response = await fetch(
+//       `http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`,
+//     );
+//     const data = await response.json();
+//     return data;
+//   }
+
+// makePaymentButton.addEventListener("click", async () => {
+//   try {
+//     const data = await fetchDataFromPaymentId(payment_id);
+//     console.log("Fetched data:", data);
+
+//     // Now redirect after confirming fetch worked
+//     window.location.href = `http://127.0.0.1:8000/api/v1/show_payment?id=${payment_id}`;
+//   } catch (err) {
+//     console.error("Error fetching payment data", err);
+//   }
+// });
+// console.log("clicked");
 
 function saveDateTime() {
   if (loginTime) {
@@ -262,6 +287,14 @@ document.querySelector("#prevPage").onclick = async () => {
   // console.log({ currentPage });
 };
 
+document.querySelector("#logoutBtn").addEventListener("click", ()=> {
+  window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html",
+  // localStorage.removeItem("user");
+  // localStorage.removeItem("authToken");
+  localStorage.clear();
+  // console.log("click")
+})
+
 function checkPageButtons() {
   let total_pages = Math.ceil(
     Number(localStorage.getItem("total")) / rowsPerPage
@@ -306,102 +339,52 @@ new Chart(document.querySelector("#activityFilter"), {
   },
 });
 
-
-
-
-// Load notification count
+// NOTIFICATIONS
 async function loadNotificationCount() {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || !user.id) {
+    let token = localStorage.getItem("authToken");
+    console.log("token", token);
+
+    if (!token) {
       document.querySelector("#notifications").textContent = "No user logged in";
       return;
     }
 
-    const response = await fetch(
-      `http://127.0.0.1:8000/api/v1/notifications/count?user_id=${user.id}`,
-      { method: "GET" }
-    );
+    // Fetch all notifications
+    let response = await fetch("http://127.0.0.1:8000/api/v1/notifications", {
+      method: "GET",
+      // credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
 
-    if (!response.ok) throw new Error("Failed to fetch notification count");
+    console.log("response", response);
 
-    const data = await response.json();
-    const count = data.unread_count || 0;
+    if (!response.ok) throw new Error("Failed to fetch notifications");
 
-    if (count > 0) {
-      document.querySelector("#notifications").textContent = `${count} unread messages`;
-    } else {
-      document.querySelector("#notifications").textContent = "No new alerts";
-    }
+    let notes = await response.json();
+
+    // Count unread locally
+    const unread = notes.filter(n => !n.read).length;
+
+    document.querySelector("#notifications").textContent =
+      unread > 0 ? `${unread} unread messages` : "No new alerts";
+
   } catch (err) {
     console.error("Error fetching notification count:", err);
     document.querySelector("#notifications").textContent = "Error loading notifications";
   }
 }
 
-// Call on page load
 loadNotificationCount();
-
-// Refresh every 30s
 setInterval(loadNotificationCount, 30000);
 
 
 
 
 
-// // Function to read a cookie by name
-// function getCookie(name) {
-//   const value = `; ${document.cookie}`;
-//   const parts = value.split(`; ${name}=`);
-//   if (parts.length === 2) return parts.pop().split(";").shift();
-// }
 
-// // Load notifications from backend
-// async function loadNotifications() {
-//   try {
-//     const userId = "689dc2bdf8b958a1ae504c4f"; // Replace with dynamic logged-in user ID
-//     const token = getCookie("access_token"); // ✅ get JWT from cookies
 
-//     if (!token) {
-//       console.error("No token found in cookies");
-//       return;
-//     }
 
-//     const response = await fetch(`http://127.0.0.1:8000/api/v1/notifications?user_id=${userId}`, {
-//       method: "GET",
-//       headers: {
-//         "Authorization": `Bearer ${token}`,  // ✅ send token in headers
-//         "Content-Type": "application/json"
-//       },
-//       credentials: "include" // ✅ allows sending cookies
-//     });
-
-//     if (!response.ok) {
-//       console.error("Fetch failed:", response.status);
-//       return;
-//     }
-
-//     const notifications = await response.json();
-
-//     const notificationsDiv = document.getElementById("notifications");
-
-//     if (notifications.length > 0) {
-//       notificationsDiv.innerHTML = `
-//         <p class="text-gray-800 font-bold">${notifications.length} unread message(s)</p>
-//         <ul class="mt-2 list-disc pl-5">
-//           ${notifications.map(n => `<li>${n.message}</li>`).join("")}
-//         </ul>
-//       `;
-//     } else {
-//       notificationsDiv.innerHTML = `<p class="text-gray-600">No new alerts</p>`;
-//     }
-//   } catch (error) {
-//     console.error("Fetch error:", error);
-//   }
-// }
-
-// // Run once when page loads
-// loadNotifications();
-
-// // Optionally refresh every 30s
-// setInterval(loadNotifications, 30000);

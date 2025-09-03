@@ -1,13 +1,20 @@
-from fastapi import APIRouter, HTTPException, Response, Request, BackgroundTasks, Query
+from fastapi import APIRouter, HTTPException, Response, Request, BackgroundTasks, Query, status
 from Backend.utils import create_access_token, hash_password, send_email_with_default_password, generate_access_code, generate_reference
 from passlib.context import CryptContext 
-from Backend.database import users_collection, EXPIRY_MINUTES, SECRET_KEY, encrypt_pending_data, decrypt_pending_data, notifications_collection
+from Backend.database import users_collection, EXPIRY_MINUTES, SECRET_KEY, encrypt_pending_data, decrypt_pending_data, notifications_collection, transactions_collection, ALGORITHM
 from Backend.Schemas.schemas import *
 from datetime import datetime
 from datetime import datetime, timedelta
 from Backend.Emails_otp.email import generate_otp, send_otp_email
 from bson import ObjectId
 import traceback
+from jose import JWTError, jwt
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
+
 
 
 auth_router = APIRouter()
@@ -206,7 +213,10 @@ async def verify_login_otp(data: dict, response: Response):
     )
 
     # Generate and set access token
-    token_data = {"email": user["email"]}
+    token_data = {
+        "id": str(user["_id"]),
+        "email": user["email"] 
+        }
     access_token = create_access_token(token_data)
     response.set_cookie(
         key="access_token",
@@ -336,11 +346,176 @@ async def create_notification(note: NotificationIn):
 
 
 @auth_router.get("/api/v1/notifications")
-async def get_notifications(user_id: str = Query(...)):
+async def get_notifications(request: Request):
+    # ✅ Get user payload from JWTMiddleware
+    payload = request.state.user  
+
+    # Make sure payload contains user_id
+    user_id = payload.get("id")
+    print ("PAYLOAD", payload)
+    if not user_id or not ObjectId.is_valid(user_id):
+        raise HTTPException(status_code=400, detail="Invalid user_id in token")
+
     # Check if user exists
-    if not ObjectId.is_valid(user_id) or not users_collection.find_one({"_id": ObjectId(user_id)}):
+    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+    if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    notes = list(notifications_collection.find({"user_id": user_id}, {"_id": 0}))
+    # Fetch notifications belonging to the logged-in user
+    notes = await notifications_collection.find(
+        {"user_id": user_id},
+        {"_id": 0}
+    ).to_list(length=None)
+
     return notes
+
+
     
+
+
+# TRANSACTIONS
+# async def save_transaction(data):
+#     transaction_doc = {
+#         "transaction_id": data.transaction_id,
+#         "status": "pending",  
+#         "created_at": datetime.now()
+#     }
+#     result = await transactions_collection.insert_one(transaction_doc)
+#     return str(result.inserted_id)
+
+
+# @auth_router.post("/api/v1/transaction/status", response_model=TransactionResponse)
+# async def check_transaction_status(data: TransactionCheck):
+#     transaction = await transactions_collection.find_one({"transaction_id": data.transaction_id})
+    
+#     if not transaction:
+#         await save_transaction(data)
+#         raise HTTPException(status_code=404, detail="Transaction not found")
+    
+#     status = transaction.get("status", "pending").lower()
+    
+
+#     if status not in ["success", "pending", "failed"]:
+#         status = "pending" 
+    
+#     return {
+#         "transaction_id": data.transaction_id,
+#         "status": status
+#     }
+
+
+# Endpoint
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/signin")
+
+@auth_router.get("/api/v1/transactions", response_model=PaginatedTransactions)
+async def get_transactions(page: int = 1, page_size: int = 10, token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("id")
+        if not user_id:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+
+    # Fetch only this user's transactions
+    skip = (page - 1) * page_size
+    cursor = transactions_collection.find({"user_id": user_id}).skip(skip).limit(page_size)
+    transactions = await cursor.to_list(length=page_size)
+
+    # Count total transactions for pagination
+    total = await transactions_collection.count_documents({"user_id": user_id})
+
+    return PaginatedTransactions(
+        total=total,
+        page=page,
+        page_size=page_size,
+        transactions=[
+            TransactionResponse(
+                transaction_id=str(tx["_id"]),
+                status=tx.get("status", "pending"),
+                amount=tx.get("amount", 0.0),
+                description=tx.get("description"),
+                created_at=tx.get("created_at", "")
+            )
+            for tx in transactions
+        ]
+    )
+
+# @auth_router.get("/api/v1/transactions")
+# async def get_user_transactions(request: Request):
+#     payload = request.state.user 
+#     user_id = payload.get("id")
+
+#     if not user_id or not ObjectId.is_valid(user_id):
+#         raise HTTPException(status_code=400, detail="Invalid user_id in token")
+
+#     # Fetch transactions for this user
+#     transactions = await transactions_collection.find(
+#         {"user_id": user_id},
+#         {"_id": 0}
+#     ).to_list(length=None)
+
+#     return {"transactions": transactions}
+
+
+
+
+# @auth_router.get("/api/v1/transactions/history", response_model=PaginatedTransactions)
+# async def get_transaction_history(
+#     page: int = Query(1, ge=1),
+#     page_size: int = Query(10, ge=1, le=50),
+#     status: Optional[str] = Query(None),   # filter by status
+#     search: Optional[str] = Query(None)    # filter by description/id
+# ):
+#     query = {}
+#     if status:
+#         query["status"] = status
+#     if search:
+#         query["$or"] = [
+#             {"transaction_id": {"$regex": search, "$options": "i"}},
+#             {"description": {"$regex": search, "$options": "i"}},
+#         ]
+
+#     total = await transactions_collection.count_documents(query)
+#     cursor = transactions_collection.find(query).skip((page - 1) * page_size).limit(page_size)
+#     results = await cursor.to_list(length=page_size)
+
+#     return PaginatedTransactions(
+#         total=total,
+#         page=page,
+#         page_size=page_size,
+#         transactions=results
+#     )
+
+
+# transactions = [
+#     {"id": 2, "type": "card", "amount": 200, "date": "2025-08-17"},
+#     {"transaction_id": "TXN123","id": 1, "type": "card", "amount": 500, "date": "2025-08-17"},
+#     {"id": 3, "type": "Transfer", "amount": 350, "date": "2025-08-18"},
+#     {"id": 4, "type": "wallet", "amount": 800, "date": "2025-08-18"},
+#     {"id": 5, "type": "card", "amount": 500, "date": "2025-08-17"},
+#     {"id": 6, "type": "card", "amount": 200, "date": "2025-08-17"},
+#     {"id": 7, "type": "Transfer", "amount": 350, "date": "2025-08-18"},
+#     {"id": 8, "type": "wallet", "amount": 800, "date": "2025-08-18"},
+# ]
+
+
+# @auth_router.post("/api/v1/transaction/status", response_model=TransactionResponse)
+# async def check_transaction_status(data: TransactionCheck):
+#     # Search through the hardcoded list
+#     transaction = next((t for t in transactions if t.get("transaction_id") == data.transaction_id), None)
+
+#     if not transaction:
+#         raise HTTPException(status_code=404, detail="Transaction not found")
+    
+#     # Use status if available, otherwise default to pending
+#     status = transaction.get("status", "pending").lower()
+
+#     if status not in ["success", "pending", "failed"]:
+#         status = "pending" 
+    
+#     return {
+#         "transaction_id": data.transaction_id,
+#         "status": status
+#     }

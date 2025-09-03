@@ -1,0 +1,19 @@
+:root {
+  --text-color: yellow;
+  --bg-color: #fff;
+}
+
+[data-theme="dark"] {
+  --text-color: white;
+  --bg-color: #000;
+}
+
+[data-theme="pink"] {
+    --text-color: white;
+  --bg-color:pink;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}

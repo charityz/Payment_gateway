@@ -6,11 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <!-- <link href="path/to/toastr.css" rel="stylesheet" /> -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
+      
   <body class="bg-gray-100 min-h-screen flex text-gray-800">
+      <div id="toast-container"></div>
+
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-lg p-4 flex-col">
       <div class="flex items-center justify-center gap-2 mb-4">
@@ -79,9 +83,9 @@
           </li>
           <li>
             <a
-              href="http://127.0.0.1:8000/api/v1/show_payment?id=c7dd7e3a-833c-11f0-8326-a434d9b61f01"
-              class="flex items-center p-2 rounded hover:bg-blue-100"
+              class="cursor-pointer flex items-center p-2 rounded hover:bg-blue-100"
               id="makePaymentBtn"
+              title="Make Payment"
             >
               💳 <span class="ml-2">Make Payment</span>
             </a>
@@ -140,7 +144,7 @@
             <h3 class="text-lg font-semibold">Activity Log</h3>
 
             <!-- Dropdown Filter -->
-            <select id="activityFilter" class="px-3 py-2 border rounded">
+            <select class="activityFilter" class="px-3 py-2 border rounded">
               <option value="all">All Activities</option>
               <option value="transaction">Transactions</option>
               <option value="login">Logins</option>
@@ -188,6 +192,8 @@
     </main>
 
     <script src="userdashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   </body>
 </html>

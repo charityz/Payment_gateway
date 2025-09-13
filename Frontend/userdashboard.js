@@ -2,40 +2,52 @@ let user = JSON.parse(localStorage.getItem("user"));
 let makePaymentButton = document.querySelector("#makePaymentBtn");
 
 let loginTime = JSON.parse(localStorage.getItem("dateTimeData"));
+let generatePayLink = "http://127.0.0.1:8000/api/v1/generate_payment";
 
-// let id = JSON.parse(localStorage.getItem("id"));
+async function generatePaymentIdLink(link) {
+  // console.log(link)
+  const { email: owner_email } = JSON.parse(localStorage.getItem("user"));
+  console.log(owner_email);
+  let amount = 1200;
+  const email = "testUser@gmail.com";
+  const access_token = localStorage.getItem("authToken");
+  console.log(access_token);
 
-//   let loginToken = localStorage.getItem("token") || localStorage.getItem("authToken")
-//   console.log(loginToken)
+  const payload = {
+    email,
+    amount,
+    owner_email,
+  };
 
-//   async function fetchDataFromPaymentId(payment_id) {
-    
-//     if (!payment_id) {
-//       return "Input Payment Id";
-//     }
-//     const response = await fetch(
-//       `http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`,
-//     );
-//     const data = await response.json();
-//     return data;
-//   }
+  try {
+    const generate = await fetch(link, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + access_token,
+      },
+      body: JSON.stringify(payload),
+    });
+    const response = await generate.json();
+    console.log(response);
+    //  (response?.message)
+    Swal.fire({
+      title: response?.message,
+    }).then(() => {
+      window.open(response?.payment_link, "_blank");
+    });
+  } catch (error) {
+    console.error(error.message);
+    alert(error.message);
+  }
+}
 
-// makePaymentButton.addEventListener("click", async () => {
-//   try {
-//     const data = await fetchDataFromPaymentId(payment_id);
-//     console.log("Fetched data:", data);
-
-//     // Now redirect after confirming fetch worked
-//     window.location.href = `http://127.0.0.1:8000/api/v1/show_payment?id=${payment_id}`;
-//   } catch (err) {
-//     console.error("Error fetching payment data", err);
-//   }
-// });
-// console.log("clicked");
-
+makePaymentButton.addEventListener("click", () => {
+  generatePaymentIdLink(generatePayLink);
+});
 function saveDateTime() {
   if (loginTime) {
-    //   console.log({loginTime})
+    console.log({ loginTime });
     return null;
   } else {
     console.log(false);
@@ -77,8 +89,6 @@ function getDateTime() {
   } else {
     last_login_time = `${day} day${day === 1 ? "" : "s"} ago`;
   }
-
-  // console.log({seconds, minute, hour, day})
 
   return { acutal_time: data.time, actual_date: data.date, last_login_time };
 }
@@ -158,31 +168,46 @@ let rowsPerPage = 3;
 document.querySelector("#prevPage").style.display = "none";
 
 async function fetchActivityData(
-  type = "all",
+  type = "transaction",
   page = currentPage,
   limit = rowsPerPage
 ) {
   let url = "";
-  if (type === "all")
+  // if (type === "all")
     url = `http://127.0.0.1:8000/api/v1/activities?page=${page}&limit=${limit}`;
   if (type === "transaction")
-    url = `http://127.0.0.1:8000/api/v1/transactions?page=${page}&limit=${limit}`;
+    url = `http://127.0.0.1:8000/api/v1/all_transactions?page=${page}&limit=${limit}`;
 
   try {
-    let response = await fetch(url);
+    let response = await fetch(url, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("authToken"),
+      },
+    });
     let data = await response.json();
+    console.log(data);
 
     const { prev_page, next_page } = data;
     localStorage.setItem("total", data.total);
 
     let items = data.activities || data.transactions || [];
 
+    // if (type === "transaction") {
+    //   activityData = items.map((tx) => ({
+    //     date: tx.date,
+    //     action: `${tx.type.toUpperCase()} - $${tx.amount}`,
+    //     status: randomStatus(),
+    //   }));
+
+    // let items = data.activities || data.transactions || [];
+
     if (type === "transaction") {
       activityData = items.map((tx) => ({
         date: tx.date,
-        action: `${tx.type.toUpperCase()} - $${tx.amount}`,
-        status: randomStatus(),
+        action: `${tx.transaction_type.toUpperCase()} - ₦${tx.amount}`,
+        status: tx.status,
       }));
+      console.log(activityData)
     } else {
       activityData = items.map((act) => ({
         date: act.date,
@@ -192,9 +217,10 @@ async function fetchActivityData(
     }
 
     filteredData = activityData;
-    //   console.log(data);
+    // console.log(data);
 
     renderTable();
+    checkPageButtons();
 
     //update page info from backend response
     if (data.total) {
@@ -207,10 +233,10 @@ async function fetchActivityData(
 }
 
 // Random status simulator for demo
-function randomStatus() {
-  const statuses = ["Success", "Pending", "Failed"];
-  return statuses[Math.floor(Math.random() * statuses.length)];
-}
+// function randomStatus() {
+//   const statuses = ["Success", "Pending", "Failed"];
+//   return statuses[Math.floor(Math.random() * statuses.length)];
+// }
 
 // Apply filters (search only, dropdown triggers fetch)
 function applyFilters() {
@@ -226,17 +252,19 @@ function applyFilters() {
 
   currentPage = 1;
   renderTable();
-  checkPageButtons();
+  // checkPageButtons();
 }
 
 // Dropdown change triggers fetch
-document.querySelector("#activityFilter").addEventListener("change", (e) => {
+document.querySelector(".activityFilter").addEventListener("change", (e) => {
   fetchActivityData(e.target.value, currentPage, rowsPerPage);
+  // console.log("sope: purr")
 });
+console.log(document.querySelector(".activityFilter"));
 
 // Search filter
 document.querySelector("#searchInput").addEventListener("input", applyFilters);
-
+console.log(document.querySelector("#activityTable"));
 // Render table with pagination
 function renderTable() {
   let tableBody = document.querySelector("#activityTable");
@@ -249,9 +277,9 @@ function renderTable() {
   } else {
     pageData.forEach((row) => {
       const statusColor =
-        row.status === "Success"
+        row.status === "successful"
           ? "bg-green-100 text-green-700"
-          : row.status === "Pending"
+          : row.status === "pending"
           ? "bg-yellow-100 text-yellow-700"
           : "bg-red-100 text-red-700";
       tableBody.innerHTML += `
@@ -283,17 +311,15 @@ document.querySelector("#prevPage").onclick = async () => {
       rowsPerPage
     );
   }
-  // console.log("prev");
-  // console.log({ currentPage });
+  console.log("prev");
+  console.log({ currentPage });
 };
 
-document.querySelector("#logoutBtn").addEventListener("click", ()=> {
-  window.location.href = "http://127.0.0.1:5500/Frontend/html/index.html",
-  // localStorage.removeItem("user");
-  // localStorage.removeItem("authToken");
-  localStorage.clear();
+document.querySelector("#logoutBtn").addEventListener("click", () => {
+  (window.location.href = "http://127.0.0.1:5500/Frontend/index.html"),
+    localStorage.clear();
   // console.log("click")
-})
+});
 
 function checkPageButtons() {
   let total_pages = Math.ceil(
@@ -307,11 +333,15 @@ function checkPageButtons() {
     document.querySelector("#nextPage").style.display = "block";
   }
   if (currentPage <= 1) {
+    console.log("prev false");
     document.querySelector("#prevPage").style.display = "none";
   } else {
+    console.log("prev true");
     document.querySelector("#prevPage").style.display = "block";
   }
 }
+
+console.log(document.querySelector("#prevPage"));
 
 document.querySelector("#nextPage").onclick = () => {
   currentPage++;
@@ -320,8 +350,8 @@ document.querySelector("#nextPage").onclick = () => {
     currentPage,
     rowsPerPage
   );
-  // console.log("next");
-  // console.log({ currentPage });
+  console.log("next");
+  console.log({ currentPage });
 };
 
 new Chart(document.querySelector("#activityFilter"), {
@@ -346,7 +376,8 @@ async function loadNotificationCount() {
     console.log("token", token);
 
     if (!token) {
-      document.querySelector("#notifications").textContent = "No user logged in";
+      document.querySelector("#notifications").textContent =
+        "No user logged in";
       return;
     }
 
@@ -356,35 +387,26 @@ async function loadNotificationCount() {
       // credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-
-    console.log("response", response);
 
     if (!response.ok) throw new Error("Failed to fetch notifications");
 
     let notes = await response.json();
+    console.log("response", notes);
 
     // Count unread locally
-    const unread = notes.filter(n => !n.read).length;
+    const unread = notes.filter((n) => !n.read).length;
 
     document.querySelector("#notifications").textContent =
       unread > 0 ? `${unread} unread messages` : "No new alerts";
-
   } catch (err) {
     console.error("Error fetching notification count:", err);
-    document.querySelector("#notifications").textContent = "Error loading notifications";
+    document.querySelector("#notifications").textContent =
+      "Error loading notifications";
   }
 }
 
 loadNotificationCount();
 setInterval(loadNotificationCount, 30000);
-
-
-
-
-
-
-
-

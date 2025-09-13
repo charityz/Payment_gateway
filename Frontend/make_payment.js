@@ -1,14 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("hi")
   const url = document.URL;
-  // console.log(url);
-  // let URL = https;
-  // console.log("url", URL)
 
   let id = JSON.parse(localStorage.getItem("id"));
-  // console.log("id", id);
-  // const id = url.split("id=")[1];
-  // console.log(id);
 
   let loginToken = localStorage.getItem("token") || localStorage.getItem("authToken")
   console.log(loginToken)
@@ -253,13 +247,6 @@ document.querySelector("#tab-transfer")
       amountPassed.textContent = generatedAmount;
     
 
-      // alert(
-      //   `Transfer NGN${generatedAmount} to:\n\nAccount Number: ${acc_number}\nBank: ${bank_name}`
-      // );
-
-      // alert(`${data.msg || "Check response"}`);
-      // console.log("Response:", data);
-
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -295,7 +282,7 @@ document.querySelector("#tab-transfer")
     );
   });
 });
-document.getElementById("back-btn").addEventListener("click", () => {
+document.querySelector("#back-btn").addEventListener("click", () => {
   window.location.href =
     "http://127.0.0.1:5500/Frontend/html/userdashboard.html";
 });

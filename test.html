@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Example</title>
+</head>
+<body>
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button id="sendButton">Send</button>
+    <div id="messages"></div>
+
+    <script>
+        const socket = new WebSocket("https://blink-pay-bank-app-backend.onrender.com"); // Replace with your server URL
+        const messageInput = document.getElementById("messageInput");
+        const sendButton = document.getElementById("sendButton");
+        const messagesDiv = document.getElementById("messages");
+
+        socket.onopen = () => {
+            console.log("Connected to Blinkpay server");
+        };
+
+        socket.onmessage = (event) => {
+            const {event:evt , data} = JSON.parse(event.data);
+
+           
+            if(evt === "welcome"){
+                alert("gotten")
+            }
+        };
+
+        socket.onclose = () => {
+            console.log("Disconnected from Blinkpay server");
+        };
+
+        socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        sendButton.addEventListener("click", () => {
+            const message = messageInput.value;
+            if (message) {
+                socket.send(message);
+                const p = document.createElement("p");
+                p.textContent = `Client: ${message}`;
+                messagesDiv.appendChild(p);
+                messageInput.value = "";
+            }
+        });
+    </script>
+</body>
+</html>

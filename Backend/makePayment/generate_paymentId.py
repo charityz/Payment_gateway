@@ -34,6 +34,7 @@ async def generate_payment(request: Request):
         data["reference_code"] = reference_code
         data["email"] = req["email"]
         data["amount"] = req["amount"]
+        data["owner_email"] = req["owner_email"]
         
         await make_payments_collection.insert_one(data)
         
@@ -65,7 +66,8 @@ async def get_payment(id:  str = Query(...)):
     
     return {
         "email": payment["email"],
-        "amount": payment["amount"]
+        "amount": payment["amount"],
+        "owner_email": payment["owner_email"]
     }
 
 

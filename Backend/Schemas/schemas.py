@@ -50,6 +50,7 @@ class GeneratePaymentId(BaseModel):
     reference_code: str
     payment_id: int
     status: str = Field (default="pending")
+    owner_email: EmailStr
     
 class NotificationIn(BaseModel):
     user_id: str
@@ -61,16 +62,6 @@ class NotificationOut(NotificationIn):
     status: str = "unread"
     created_at: datetime
    
-    
-# Request model
-# class TransactionCheck(BaseModel):
-#     transaction_id: str
-
-# # Response model with fixed statuses
-# class TransactionResponse(BaseModel):
-#     transaction_id: str
-#     status: Literal["success", "pending", "failed"]
-    
     
 # Your existing response model
 class TransactionResponse(BaseModel):

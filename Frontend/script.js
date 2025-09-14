@@ -78,7 +78,7 @@ function attachOtpHandlers() {
         endpoint = `${BASE_URL}/api/v1/verify_registration_otp`;
         payload = { email: otpContext.email, otp };
       } else if (otpContext?.type === "login") {
-        endpoint = `${BASE_URL}api/v1/verify_otp`;
+        endpoint = `${BASE_URL}/api/v1/verify_otp`;
         payload = { email: otpContext.email, otp };
       } else {
         throw new Error("Invalid OTP context");

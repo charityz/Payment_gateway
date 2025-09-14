@@ -70,8 +70,8 @@ async def register_user(user: UserRegister, response: Response, background_task:
             key="pending_registration",
             value=encrypted_data,
             httponly=True,
-            secure=False,  
-            samesite="lax",
+            secure=True,  
+            samesite="none",
             max_age=600
         )
 
@@ -93,6 +93,7 @@ async def register_user(user: UserRegister, response: Response, background_task:
 # VERIFY REGISTRATION OTP
 @auth_router.post("/api/v1/verify_registration_otp")
 async def verify_registration_otp(data: dict, request: Request, response: Response):
+    # email = data.get("email")
     otp_code = data.get("otp")
     if not otp_code:
         raise HTTPException(status_code=400, detail="OTP is required")

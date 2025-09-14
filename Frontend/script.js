@@ -71,11 +71,12 @@ function attachOtpHandlers() {
 
     try {
       let endpoint = "";
+      // let endpointT = "";
       let payload = {};
 
       if (otpContext?.type === "register") {
         endpoint = `${BASE_URL}/api/v1/verify_registration_otp`;
-        payload = { otp };
+        payload = { email: otpContext.email, otp };
       } else if (otpContext?.type === "login") {
         endpoint = `${BASE_URL}api/v1/verify_otp`;
         payload = { email: otpContext.email, otp };

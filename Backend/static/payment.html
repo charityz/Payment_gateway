@@ -411,6 +411,8 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
+        
+        const BASE_URL = "https://payment-gateway-3.onrender.com"
         let loader = document.querySelector(".loader");
         let everything = document.querySelector(".everything");
         let whole_form = document.querySelector("#whole_form");
@@ -438,7 +440,7 @@
             throw new Error("Missing Payment ID");
           }
           const response = await fetch(
-            `http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`
+            `${BASE_URL}/api/v1/get_payment?id=${payment_id}`
           );
           return await response.json();
         }
@@ -480,9 +482,9 @@
         let profileUrl =
           "https://blink-pay-bank-app-backend.onrender.com/api/v1/auth/profile";
 
-        let payvergeSignin = "http://127.0.0.1:8000/api/v1/signin";
+        let payvergeSignin = `${BASE_URL}/api/v1/signin`;
 
-        let payvergeSignInVerifyOtp = "http://127.0.0.1:8000/api/v1/verify_otp";
+        let payvergeSignInVerifyOtp = `${BASE_URL}/api/v1/verify_otp`;
 
         // blink pay
 
@@ -621,7 +623,7 @@
         ) {
           let transaction_type = tran_type;
           let amount = Number(localStorage.getItem("amount_to_send"));
-          const postLink = "http://127.0.0.1:8000/api/v1/transactions";
+          const postLink = `${BASE_URL}/api/v1/transactions`;
 
           try {
             status = !status ? "failed to include status" : status;
@@ -850,7 +852,7 @@
             return "Input Payment Id";
           }
           const response = await fetch(
-            `http://127.0.0.1:8000/api/v1/get_payment?id=${payment_id}`
+            `${BASE_URL}/api/v1/get_payment?id=${payment_id}`
           );
           const data = await response.json();
           localStorage.setItem("owner_email", data?.owner_email);
@@ -972,7 +974,7 @@
 
           try {
             const res = await fetch(
-              "http://127.0.0.1:8000/api/v1/make_payment",
+              `${BASE_URL}/api/v1/make_payment`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

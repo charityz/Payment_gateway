@@ -1,8 +1,9 @@
+const BASE_URL = "https://payment-gateway-3.onrender.com"
 let user = JSON.parse(localStorage.getItem("user"));
 let makePaymentButton = document.querySelector("#makePaymentBtn");
 
 let loginTime = JSON.parse(localStorage.getItem("dateTimeData"));
-let generatePayLink = "http://127.0.0.1:8000/api/v1/generate_payment";
+let generatePayLink = `${BASE_URL}/api/v1/generate_payment`;
 
 async function generatePaymentIdLink(link) {
   // console.log(link)
@@ -174,9 +175,9 @@ async function fetchActivityData(
 ) {
   let url = "";
   // if (type === "all")
-    url = `http://127.0.0.1:8000/api/v1/activities?page=${page}&limit=${limit}`;
+    url = `${BASE_URL}/api/v1/activities?page=${page}&limit=${limit}`;
   if (type === "transaction")
-    url = `http://127.0.0.1:8000/api/v1/all_transactions?page=${page}&limit=${limit}`;
+    url = `${BASE_URL}/api/v1/all_transactions?page=${page}&limit=${limit}`;
 
   try {
     let response = await fetch(url, {
@@ -382,7 +383,7 @@ async function loadNotificationCount() {
     }
 
     // Fetch all notifications
-    let response = await fetch("http://127.0.0.1:8000/api/v1/notifications", {
+    let response = await fetch(`${BASE_URL}/api/v1/notifications`, {
       method: "GET",
       // credentials: "include",
       headers: {

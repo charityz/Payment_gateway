@@ -1,6 +1,7 @@
 // =======================
 // ✅ OTP MODAL HANDLER
 // =======================
+const BASE_URL = "https://payment-gateway-3.onrender.com"
 let otpModalLoaded = null;
 let otpContext = null; // {type: "register"|"login", email}
 
@@ -73,10 +74,10 @@ function attachOtpHandlers() {
       let payload = {};
 
       if (otpContext?.type === "register") {
-        endpoint = "http://127.0.0.1:8000/api/v1/verify_registration_otp";
+        endpoint = `${BASE_URL}/api/v1/verify_registration_otp`;
         payload = { otp };
       } else if (otpContext?.type === "login") {
-        endpoint = "http://127.0.0.1:8000/api/v1/verify_otp";
+        endpoint = `${BASE_URL}api/v1/verify_otp`;
         payload = { email: otpContext.email, otp };
       } else {
         throw new Error("Invalid OTP context");
@@ -169,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const response = await fetch("http://127.0.0.1:8000/api/v1/register_user", {
+      const response = await fetch(`${BASE_URL}/api/v1/register_user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -223,7 +224,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       console.log("email", email)
-      let otpResponse = await fetch("http://127.0.0.1:8000/api/v1/signin", {
+      let otpResponse = await fetch(`${BASE_URL}/api/v1/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

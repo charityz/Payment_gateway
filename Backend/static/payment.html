@@ -852,7 +852,7 @@
             return "Input Payment Id";
           }
           const response = await fetch(
-          `${BASE_URL}/api/v1/get_payment?id=${payment_id}`
+          `https://payment-gateway-3.onrender.com/api/v1/get_payment?id=${payment_id}`
           );
           const data = await response.json();
           localStorage.setItem("owner_email", data?.owner_email);
@@ -870,9 +870,6 @@
         const user = JSON.parse(localStorage.getItem("user"));
 
         JSON.stringify(localStorage.setItem("amount_to_send", userAmount));
-
-        // document.getElementById("email").value = userEmail || user.email || "abc@gmail.com";
-        // document.getElementById("amount").value =   userAmount || 90000
 
         // ========= Tabs =========
         let tabCard = document.querySelector("#tab-card");
@@ -974,7 +971,7 @@
 
           try {
             const res = await fetch(
-              `${BASE_URL}/api/v1/make_payment`,
+              `https://payment-gateway-3.onrender.com/api/v1/make_payment`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

@@ -852,7 +852,7 @@
             return "Input Payment Id";
           }
           const response = await fetch(
-            `${BASE_URL}/api/v1/get_payment?id=${payment_id}`
+          `${BASE_URL}/api/v1/get_payment?id=${payment_id}`
           );
           const data = await response.json();
           localStorage.setItem("owner_email", data?.owner_email);

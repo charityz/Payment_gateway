@@ -317,7 +317,7 @@ document.querySelector("#prevPage").onclick = async () => {
 };
 
 document.querySelector("#logoutBtn").addEventListener("click", () => {
-  (window.location.href = "http://127.0.0.1:5500/Frontend/index.html"),
+  (window.location.href = "https://payverge.netlify.app"),
     localStorage.clear();
   // console.log("click")
 });

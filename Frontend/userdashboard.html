@@ -12,11 +12,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
       
-  <body class="bg-gray-100 min-h-screen flex text-gray-800">
+  <body class="bg-gray-100 min-h-screen flex text-gray-800 overflow-x-hidden">
       <div id="toast-container"></div>
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-lg p-4 flex-col">
+    <aside class="hidden md:flex w-64 bg-white shadow-lg p-4 flex-col">
       <div class="flex items-center justify-center gap-2 mb-4">
         <div
           class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-cyan-400 text-cyan-400 font-bold text-lg"
@@ -132,7 +132,7 @@
       </section>
 
       <!-- Chart -->
-      <section class="bg-white p-4 rounded shadow mb-6">
+      <section class="bg-white p-4 rounded shadow mb-6 overflow-x-auto">
         <h3 class="text-lg font-semibold mb-4">Transactions Overview</h3>
         <canvas id="activityFilter" height="50"></canvas>
       </section>
@@ -160,7 +160,8 @@
             class="px-3 py-2 border rounded w-64"
           />
         </div>
-
+        <div class="overflow-x-auto">
+          
         <table class="w-full border-collapse border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
@@ -171,6 +172,7 @@
           </thead>
           <tbody id="activityTable"></tbody>
         </table>
+        </div>
 
         <!-- Pagination Controls -->
         <div class="flex justify-between items-center mt-4">

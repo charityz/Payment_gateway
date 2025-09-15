@@ -1,21 +1,20 @@
-<!-- dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <!-- <link href="path/to/toastr.css" rel="stylesheet" /> -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- <link href="path/to/toastr.css" rel="stylesheet" />............ -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-      
-  <body class="bg-gray-100 min-h-screen flex text-gray-800 overflow-x-hidden">
+
+  <!-- <body class="bg-gray-100 min-h-screen flex text-gray-800 overflow-x-hidden">
       <div id="toast-container"></div>
 
-    <!-- Sidebar -->
+    Sidebar
     <aside class="hidden md:flex w-64 bg-white shadow-lg p-4 flex-col">
       <div class="flex items-center justify-center gap-2 mb-4">
         <div
@@ -100,16 +99,16 @@
       </nav>
     </aside>
 
-    <!-- Main Content -->
+    Main Content
     <main class="flex-1 p-6">
-      <!-- Header -->
+      Header
       <header class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold">
           Welcome, <span id="userDetail"></span>
         </h2>
       </header>
 
-      <!-- Stat Cards -->
+      Stat Cards
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white p-4 rounded shadow">
           <h3 class="text-lg font-semibold">Recent Logins</h3>
@@ -120,30 +119,21 @@
           <h3 class="text-lg font-semibold">Notifications</h3>
           <p class="text-gray-600" id="notifications">No new alerts</p>
         </div>
-        <!-- <div class="bg-white p-4 rounded shadow">
-          <h3 class="text-lg font-semibold mb-4">Make a Payment</h3>
-          <button
-            id="makePaymentBtn"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            💳 Pay Now
-          </button>
-        </div> -->
       </section>
 
-      <!-- Chart -->
+      Chart
       <section class="bg-white p-4 rounded shadow mb-6">
         <h3 class="text-lg font-semibold mb-4">Transactions Overview</h3>
         <canvas id="activityFilter" height="50"></canvas>
       </section>
 
-      <!-- Activity Log Section -->
+      Activity Log Section
       <section class="bg-white p-4 rounded shadow">
         <div class="flex justify-between items-center mb-4">
           <div class="flex items-center gap-4">
             <h3 class="text-lg font-semibold">Activity Log</h3>
 
-            <!-- Dropdown Filter -->
+            Dropdown Filter
             <select class="activityFilter" class="px-3 py-2 border rounded">
               <option value="all">All Activities</option>
               <option value="transaction">Transactions</option>
@@ -152,7 +142,7 @@
             </select>
           </div>
 
-          <!-- Search -->
+          Search
           <input
             type="text"
             id="searchInput"
@@ -172,7 +162,7 @@
           <tbody id="activityTable"></tbody>
         </table>
 
-        <!-- Pagination Controls -->
+        Pagination Controls
         <div class="flex justify-between items-center mt-4">
           <button
             id="prevPage"
@@ -195,6 +185,168 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+  </body> -->
+
+  <body class="bg-gray-100 min-h-screen flex text-gray-800 overflow-x-hidden">
+    <div id="toast-container"></div>
+
+    <!-- Sidebar -->
+    <aside
+      id="mobileSidebar"
+      class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg p-4 flex-col z-30 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden"
+    >
+      <!-- Close Button -->
+      <button
+        id="closeSidebar"
+        class="absolute right-3 top-3 p-2 text-gray-600 hover:text-red-500"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+
+      <div class="flex items-center justify-center gap-2 mb-4 mt-8">
+        <div
+          class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-cyan-400 text-cyan-400 font-bold text-lg"
+        >
+          P
+        </div>
+        <h2 class="border-cyan-400 text-cyan-400 text-2xl font-bold">
+          Payverge
+        </h2>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1">
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="flex items-center p-2 rounded hover:bg-blue-100"
+              >🏠 <span class="ml-2">Home</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="flex items-center p-2 rounded hover:bg-blue-100"
+              >📊 <span class="ml-2">Stats</span></a
+            >
+          </li>
+          <li>
+            <a
+              href="transactions.html"
+              class="flex items-center p-2 rounded hover:bg-blue-100"
+              >📄 <span class="ml-2">Transactions</span></a
+            >
+          </li>
+          <li>
+            <button
+              id="settingsBtn"
+              class="px-3 py-2 rounded hover:bg-gray-300"
+            >
+              ⚙️ Settings
+            </button>
+          </li>
+          <li>
+            <a
+              class="cursor-pointer flex items-center p-2 rounded hover:bg-blue-100"
+              id="makePaymentBtn"
+              >💳 <span class="ml-2">Make Payment</span></a
+            >
+          </li>
+        </ul>
+        <button
+          id="logoutBtn"
+          class="mt-auto flex items-center p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+        >
+          <span class="ml-2">Logout</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:flex w-64 bg-white shadow-lg p-4 flex-col">
+      <!-- same sidebar nav as above -->
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <div
+          class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-cyan-400 text-cyan-400 font-bold text-lg"
+        >
+          P
+        </div>
+        <h2 class="border-cyan-400 text-cyan-400 text-2xl font-bold">
+          Payverge
+        </h2>
+      </div>
+      <nav class="flex-1">
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="flex items-center p-2 rounded hover:bg-blue-100"
+              >🏠 <span class="ml-2">Home</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="flex items-center p-2 rounded hover:bg-blue-100"
+              >📊 <span class="ml-2">Stats</span></a
+            >
+          </li>
+          <li>
+            <a
+              href="transactions.html"
+              class="flex items-center p-2 rounded hover:bg-blue-100"
+              >📄 <span class="ml-2">Transactions</span></a
+            >
+          </li>
+          <li>
+            <button
+              id="settingsBtnDesktop"
+              class="px-3 py-2 rounded hover:bg-gray-300"
+            >
+              ⚙️ Settings
+            </button>
+          </li>
+          <li>
+            <a
+              class="cursor-pointer flex items-center p-2 rounded hover:bg-blue-100"
+              id="makePaymentBtnDesktop"
+              >💳 <span class="ml-2">Make Payment</span></a
+            >
+          </li>
+        </ul>
+        <button
+          id="logoutBtnDesktop"
+          class="mt-auto flex items-center p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+        >
+          <span class="ml-2">Logout</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-6">
+        <!-- Hamburger only for mobile -->
+        <button id="menuToggle" class="md:hidden p-2 bg-gray-200 rounded">
+          ☰
+        </button>
+        <h2 class="text-3xl font-bold">
+          Welcome, <span id="userDetail"></span>
+        </h2>
+      </header>
+
+      <!-- Rest of dashboard content (cards, charts, activity logs, etc.) -->
+    </main>
+
+    <!-- Script -->
+    <script>
+      const menuToggle = document.getElementById("menuToggle");
+      const sidebar = document.getElementById("mobileSidebar");
+      const closeSidebar = document.getElementById("closeSidebar");
+
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.remove("-translate-x-full");
+      });
+
+      closeSidebar.addEventListener("click", () => {
+        sidebar.classList.add("-translate-x-full");
+      });
+    </script>
   </body>
 </html>
 

@@ -3,14 +3,16 @@ from Backend.utils import generate_access_code, generate_reference
 from Backend.database import payments_collection, make_payments_collection
 from fastapi.responses import HTMLResponse, FileResponse
 import os
-# from Backend.main import BASE_DIR
+from pathlib import Path
 from uuid import uuid1
 # from Backend.Emails_otp.email import generate_otp, send_otp_email
 
 
 auth_router = APIRouter()
 
-BASE_DIR = r"C:\Users\HP\Desktop\Payment_gateway\Backend"
+# BASE_DIR = r"C:\Users\HP\Desktop\Payment_gateway\Backend"
+
+BASE_DIR = Path(__file__).resolve().parent
 
 url = "http://127.0.0.1:8000/api/v1/show_payment"
 
@@ -75,8 +77,11 @@ async def get_payment(id:  str = Query(...)):
 @auth_router.get("/api/v1/show_payment", response_class=HTMLResponse)
 async def show_payment(id: str = Query(...)):
    
-    filePath = os.path.join(BASE_DIR, "static", "payment.html")
-    if not os.path.exists(filePath):
+    # filePath = os.path.join(BASE_DIR, "static", "payment.html")
+    
+    filePath = BASE_DIR / "static" / "payment.html"
+    # if not os.path.exists(filePath):
+    if not filePath.exists():
         return HTMLResponse(content=f"<h1>Payment page not found for id={id}</h1>", status_code=404)
     
     return FileResponse(filePath)

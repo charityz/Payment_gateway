@@ -14,7 +14,7 @@ auth_router = APIRouter()
 
 BASE_DIR = Path(__file__).resolve().parent
 
-url = "http://127.0.0.1:8000/api/v1/show_payment"
+url = "https://payment-gateway-3.onrender.com/api/v1/show_payment"
 
 
 @auth_router.post("/api/v1")

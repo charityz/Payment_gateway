@@ -12,7 +12,7 @@ auth_router = APIRouter()
 
 # BASE_DIR = r"C:\Users\HP\Desktop\Payment_gateway\Backend"
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 url = "https://payment-gateway-3.onrender.com/api/v1/show_payment"
 

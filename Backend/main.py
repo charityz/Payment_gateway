@@ -36,8 +36,8 @@ if os.path.isdir(WELL_KNOWN_DIR):
 origins = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
-    "https://payment-gateway-3.onrender.com",
     "http://localhost:3000",
+    "https://payment-gateway-3.onrender.com",
     'https://payverge.netlify.app'
 ]
 
@@ -48,6 +48,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.add_middleware(JWTMiddleware)
 
 

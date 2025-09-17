@@ -412,15 +412,24 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         const BASE_URL = "https://payment-gateway-3.onrender.com";
+        const formCard = document.querySelector("#form-card");
+        const formTransfer = document.querySelector("#form-transfer");
+        const formWallet = document.querySelector("#form-wallet");
+
+        // Grab all tabs
+        const tabCard = document.querySelector("#tab-card");
+        const tabTransfer = document.querySelector("#tab-transfer");
+        const tabWallet = document.querySelector("#tab-wallet");
+
         let loader = document.querySelector(".loader");
         let everything = document.querySelector(".everything");
         let whole_form = document.querySelector("#whole_form");
         let emailInput = document.querySelector("#email");
         let amountInput = document.querySelector("#amount");
 
-        loader.classList.remove("hidden");
-        everything.classList.add("hidden");
-        whole_form.classList.add("items-center", "justify-center");
+        // loader.classList.remove("hidden");
+        // everything.classList.add("hidden");
+        // whole_form.classList.add("items-center", "justify-center");
 
         const transactionRefId = new URLSearchParams(
           window.location.search
@@ -516,36 +525,49 @@
         const mockNum = document.querySelector("#mock-number");
         const mockExp = document.querySelector("#mock-exp");
         const mockCvv = document.querySelector("#mock-cvv");
-
+        // ✅ Expiry date validation
         function isExpired(mmYY) {
           const [mmS, yyS] = (mmYY || "").split("/");
-          const mm = parseInt(mmS, 10),
-            yy = parseInt(yyS, 10);
+          const mm = parseInt(mmS, 10);
+          const yy = parseInt(yyS, 10);
+
           if (!mm || !yy || mm < 1 || mm > 12) return true;
+
           const now = new Date();
           const curM = now.getMonth() + 1;
           const curY = now.getFullYear() % 100;
+
           return yy < curY || (yy === curY && mm < curM);
         }
 
+        // ✅ Card number input
         cardNumber.addEventListener("input", () => {
-          let val = cardNumber.value.replace(/\D/g, "").slice(0, 16);
-          const grouped = val.match(/.{1,4}/g)?.join("-") || val;
+          let val = cardNumber.value.replace(/\D/g, "").slice(0, 16); // only digits, max 16
+          let grouped = "";
+
+          // strictly group into 4-4-4-4
+          for (let i = 0; i < val.length; i += 4) {
+            if (i > 0) grouped += "-";
+            grouped += val.substring(i, i + 4);
+          }
+
           cardNumber.value = grouped;
-          mockNum.textContent = grouped.padEnd(19, "•");
+          mockNum.textContent = grouped.padEnd(19, "•"); // show mock numbers
           errCard.classList.add("hidden");
         });
 
+        // ✅ Expiry input (forces MM/YY)
         expiry.addEventListener("input", () => {
-          let val = expiry.value.replace(/\D/g, "");
-          if (val.length === 2 && !expiry.value.includes("/")) val += "/";
-          else if (val.length > 2)
-            val = val.slice(0, 2) + "/" + val.slice(2, 4);
+          let val = expiry.value.replace(/\D/g, "").slice(0, 4); // only digits, max 4
+          if (val.length >= 3) {
+            val = val.slice(0, 2) + "/" + val.slice(2);
+          }
           expiry.value = val;
           mockExp.textContent = val || "MM/YY";
           errExp.classList.add("hidden");
         });
 
+        // ✅ CVV input (3 digits only)
         cvv.addEventListener("input", () => {
           cvv.value = cvv.value.replace(/\D/g, "").slice(0, 3);
           mockCvv.textContent = cvv.value.replace(/./g, "*") || "***";
@@ -619,6 +641,7 @@
         document
           .querySelector("#tab-transfer")
           .addEventListener("click", async () => {
+            console.log("click");
             loader.classList.remove("hidden");
             everything.classList.add("hidden");
 

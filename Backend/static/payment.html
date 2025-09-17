@@ -454,7 +454,7 @@
           // Store values
           localStorage.setItem("owner_email", owner_email);
           localStorage.setItem("amount_to_send", userAmount);
-          localStorage.setItem("token", login_token);
+          // localStorage.setItem("token", login_token);
 
           // Fill in form fields
           emailInput.value = userEmail || "N/A";
@@ -519,7 +519,7 @@
 
         let login_token = loginResponse?.token;
         // saving token to local storage
-        // localStorage.setItem("token", login_token);
+        localStorage.setItem("token", login_token);
 
         const profile = await fetch(profileUrl, {
           method: "GET",

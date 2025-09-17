@@ -1,7 +1,7 @@
 // =======================
 // ✅ OTP MODAL HANDLER
 // =======================
-const BASE_URL = "https://payment-gateway-3.onrender.com"
+const BASE_URL = "https://payment-gateway-3.onrender.com";
 // const BASE_URL2 = "https://payverge.netlify.app"
 let otpModalLoaded = null;
 let otpContext = null; // {type: "register"|"login", email}
@@ -25,6 +25,31 @@ async function loadOtpModal() {
   });
 
   return otpModalLoaded;
+}
+
+async function preloadDashboardData(token) {
+  try {
+    // Prefetch notifications
+    const notifRes = await fetch(`${BASE_URL}/api/v1/notifications`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const notifications = await notifRes.json();
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+
+    // Prefetch activities/transactions (first page)
+    const actRes = await fetch(
+      `${BASE_URL}/api/v1/all_transactions?page=1&limit=3`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    const activities = await actRes.json();
+    localStorage.setItem("activities", JSON.stringify(activities));
+
+    console.log("✅ Prefetch complete!");
+  } catch (err) {
+    console.error("Prefetch error:", err);
+  }
 }
 
 function attachOtpHandlers() {
@@ -60,7 +85,9 @@ function attachOtpHandlers() {
   });
 
   otpSubmit.addEventListener("click", async () => {
-    const otp = Array.from(otpInputs).map((i) => i.value).join("");
+    const otp = Array.from(otpInputs)
+      .map((i) => i.value)
+      .join("");
     if (otp.length !== 6) {
       otpMessage.style.color = "red";
       otpMessage.textContent = "Please enter all 6 digits.";
@@ -98,23 +125,28 @@ function attachOtpHandlers() {
       if (otpContext.type === "login") {
         // Save login state
         localStorage.setItem("authToken", data.access_token);
-        localStorage.setItem("user", JSON.stringify({
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          created_at: data.created_at
-        }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            created_at: data.created_at,
+          })
+        );
         otpMessage.style.color = "green";
         otpMessage.textContent = "Login successful!";
+        await preloadDashboardData(data.access_token);
         setTimeout(() => {
-          close();`https://payverge.netlify.app/userdashboard.html`;
+          close();
+          window.location,
+            (href = `https://payverge.netlify.app/userdashboard.html`);
         }, 1500);
       } else {
         otpMessage.style.color = "green";
         otpMessage.textContent = "OTP Verified successfully!";
         setTimeout(() => close(), 1500);
       }
-
     } catch (err) {
       otpMessage.style.color = "red";
       otpMessage.textContent = err.message;
@@ -157,12 +189,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     let phone_number = document.querySelector("#phone").value.trim();
     let password = document.querySelector("#password").value.trim();
 
-    if (!country || !first_name || !last_name || !email || !phone_number || !password) {
+    if (
+      !country ||
+      !first_name ||
+      !last_name ||
+      !email ||
+      !phone_number ||
+      !password
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    const formData = { first_name, last_name, email, phone_number, password, country, business_name };
+    const formData = {
+      first_name,
+      last_name,
+      email,
+      phone_number,
+      password,
+      country,
+      business_name,
+    };
 
     try {
       registerSpinner.classList.remove("hidden");
@@ -185,7 +232,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // ✅ Open OTP modal in register mode
       openOtpModal({ type: "register", email });
-
     } catch (error) {
       console.error("Registration error:", error);
       alert(error.message);
@@ -207,8 +253,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let loginBtn = document.querySelector("#loginbtn");
   let loginText = document.querySelector("#login-text");
   let errors = {
-    login: "Error- Invalid Email, Kindly register"
-  }
+    login: "Error- Invalid Email, Kindly register",
+  };
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -224,7 +270,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loginBtn.disabled = true;
 
     try {
-      console.log("email", email)
+      console.log("email", email);
       let otpResponse = await fetch(`${BASE_URL}/api/v1/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -233,15 +279,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       const otpData = await otpResponse.json();
-      if (!otpResponse.ok) throw new Error(otpData.detail || "Failed to send OTP");
+      if (!otpResponse.ok)
+        throw new Error(otpData.detail || "Failed to send OTP");
 
       document.querySelector("#login_modal").close();
 
       // ✅ Open OTP modal in login mode
       openOtpModal({ type: "login", email });
-
     } catch (err) {
-      console.log(err.message)
+      console.log(err.message);
       console.log("Error sending OTP:", err);
       alert(err.message || errors.login);
     } finally {

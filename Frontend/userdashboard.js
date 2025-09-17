@@ -1,4 +1,4 @@
-const BASE_URL = "https://payment-gateway-3.onrender.com"
+const BASE_URL = "https://payment-gateway-3.onrender.com";
 let user = JSON.parse(localStorage.getItem("user"));
 let makePaymentButton = document.querySelector("#makePaymentBtn");
 
@@ -175,7 +175,7 @@ async function fetchActivityData(
 ) {
   let url = "";
   // if (type === "all")
-    url = `${BASE_URL}/api/v1/activities?page=${page}&limit=${limit}`;
+  url = `${BASE_URL}/api/v1/activities?page=${page}&limit=${limit}`;
   if (type === "transaction")
     url = `${BASE_URL}/api/v1/all_transactions?page=${page}&limit=${limit}`;
 
@@ -208,7 +208,7 @@ async function fetchActivityData(
         action: `${tx.transaction_type.toUpperCase()} - ₦${tx.amount}`,
         status: tx.status,
       }));
-      console.log(activityData)
+      console.log(activityData);
     } else {
       activityData = items.map((act) => ({
         date: act.date,
@@ -317,9 +317,8 @@ document.querySelector("#prevPage").onclick = async () => {
 };
 
 document.querySelector("#logoutBtn").addEventListener("click", () => {
-  window.location.href = "https://payverge.netlify.app",
-    localStorage.clear();
-  console.log("click")
+  (window.location.href = "https://payverge.netlify.app"), localStorage.clear();
+  console.log("click");
 });
 
 function checkPageButtons() {

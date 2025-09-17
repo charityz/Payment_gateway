@@ -30,6 +30,43 @@ if os.path.isdir(FRONTEND_DIR):
 WELL_KNOWN_DIR = os.path.join(FRONTEND_DIR, ".well-known")
 if os.path.isdir(WELL_KNOWN_DIR):
     app.mount("/.well-known", StaticFiles(directory=WELL_KNOWN_DIR), name="well_known")
+    
+
+
+origins = [
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "https://payment-gateway-3.onrender.com",
+    'https://payverge.netlify.app'
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # or ["*"] to allow all
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(JWTMiddleware)
+
+
+
+
+app.include_router(auth.auth_router)
+app.include_router(card.auth_router)
+app.include_router(makepayment.auth_router)
+app.include_router(generate_paymentId.auth_router)
+# app.include_router(notifications.auth_router)
+
+
+auth_router = APIRouter()
+
+# @auth_router.post("/api/v1")
+
+
+@auth_router.get("/")
+async def root():
+    return {"message": "FastAPI is running"}    
  
 
 # app = FastAPI()
@@ -82,37 +119,7 @@ if os.path.isdir(WELL_KNOWN_DIR):
 #     {"id": 8, "type": "wallet", "amount": 800, "date": "2025-08-18"},
 # ]
 
-app.add_middleware(JWTMiddleware)
 
-origins = [
-    "http://127.0.0.1:5500",
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    "https://payment-gateway-3.onrender.com",
-    'https://payverge.netlify.app'
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # or ["*"] to allow all
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-
-
-app.include_router(auth.auth_router)
-app.include_router(card.auth_router)
-app.include_router(makepayment.auth_router)
-app.include_router(generate_paymentId.auth_router)
-# app.include_router(notifications.auth_router)
-
-
-auth_router = APIRouter()
-
-@auth_router.post("/api/v1")
 
 
 # @app.get("/api/v1/transactions")
@@ -155,9 +162,6 @@ auth_router = APIRouter()
 #     }
 
 
-@auth_router.get("/")
-async def root():
-    return {"message": "FastAPI is running"}
 
 
 

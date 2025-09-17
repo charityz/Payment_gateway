@@ -584,19 +584,6 @@
           return Math.round(diffInMilliseconds / 60000);
         }
 
-        // let getUrl = new URLSearchParams(window.location.search).get("id");
-        // console.log(getUrl.get("id"))
-        // console.log("url", getUrl.getAll("id"))
-        // transactionRefId = new URLSearchParams(
-        //   window.location.search
-        // ).get("id");
-        // console.log("id", transactionRefId);
-        // localStorage.setItem("payment_id", transactionRefId);
-
-        // if (!transactionRefId) {
-        //   console.error("Transaction reference missing in URL");
-        //   return;
-        // }
 
         const socket = new WebSocket(
           "https://blink-pay-bank-app-backend.onrender.com"
@@ -605,11 +592,6 @@
         socket.onopen = () => {
           console.log("Connected to Blinkpay server", transactionRefId);
         };
-        // transfer_initialized
-        // money_received  should happen  8secs afetr tranfer_initialized
-
-        // transfer_failed
-        // card_payment failed
 
         function clearDefaults() {
           localStorage.removeItem("v_account");
@@ -767,10 +749,6 @@
 
         let copyAccountNumBtn = document.querySelector("#copy-account-number");
         let copyAmountBtn = document.querySelector("#copy-amount");
-
-        // loader = document.querySelector(".loader");
-        // whole_form = document.querySelector("#whole_form");
-        // everything = document.querySelector(".everything");
         let amountValue = document.querySelector("#amount");
         let accNumber = document.querySelector("#account-number");
         let amountTransfered = document.querySelector("#amount-transfered");
@@ -1094,10 +1072,10 @@
                     body: JSON.stringify(payload),
                   }
                 );
-                console.log(
-                  "Request sent to:",
-                  `${apiBase}/api/v1/account/create-virtual-account`
-                );
+                // console.log(
+                //   "Request sent to:",
+                //   `${apiBase}/api/v1/account/create-virtual-account`
+                // );
                 console.log("Payload:", payload);
 
                 const generated = await res.json();
@@ -1179,17 +1157,7 @@
               // alert(err.message);
               whole_form.textContent = "Try again later";
             }
-            // document
-            //   .querySelector("#confirm-transfer")
-            //   .addEventListener("click", () => {
-            //     console.log("clicked");
-            //   });
           });
-        // document
-        //   .querySelector("#confirm-transfer")
-        //   .addEventListener("click", () => {
-        //     console.log("clicked");
-        //   });
 
         // ========= Wallet Submit with Validation =========
         document.getElementById("wallet-btn").addEventListener("click", () => {

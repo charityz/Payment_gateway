@@ -2,7 +2,7 @@
 // ✅ OTP MODAL HANDLER
 // =======================
 const BASE_URL = "https://payment-gateway-3.onrender.com";
-// const BASE_URL2 = "https://payverge.netlify.app"
+const FRONTEND_URL = "https://payverge.netlify.app"
 let otpModalLoaded = null;
 let otpContext = null; // {type: "register"|"login", email}
 
@@ -139,13 +139,14 @@ function attachOtpHandlers() {
         await preloadDashboardData(data.access_token);
         setTimeout(() => {
           close();
-          window.location,
-            (href = `https://payverge.netlify.app/userdashboard.html`);
+          window.location.href = `${FRONTEND_URL}/userdashboard.html`;
         }, 1500);
       } else {
         otpMessage.style.color = "green";
         otpMessage.textContent = "OTP Verified successfully!";
-        setTimeout(() => close(), 1500);
+        setTimeout(() =>{ close();
+          window.location.href = `${FRONTEND_URL}//userdashboard.html`
+        }, 1500);
       }
     } catch (err) {
       otpMessage.style.color = "red";

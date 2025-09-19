@@ -150,14 +150,33 @@ function extractBasedOnLengthOfTime(time, length) {
 
   return extractedTime;
 }
+async function redirectToDashboard() {
+  saveDateTime();
 
-saveDateTime();
+  const { actual_date, acutal_time, last_login_time } = getDateTime() || {};
 
-const { actual_date, acutal_time, last_login_time } = getDateTime();
+  if (actual_date && acutal_time) {
+    document.querySelector("#recentLogins").textContent =
+      `Date: ${actual_date} | Time: ${acutal_time} | Last Login: ${last_login_time}`;
+  }
 
-document.querySelector("#recentLogins").textContent = `Date: ${actual_date}.... 
-      Time: ${acutal_time}.... LastLogin: ${last_login_time} `;
-document.querySelector("#userDetail").textContent = user?.name || "Guest";
+  document.querySelector("#userDetail").textContent = user?.name || "Guest";
+
+  await fetchActivityData("transaction", currentPage, rowsPerPage);
+  await loadNotificationCount();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  redirectToDashboard();
+});
+
+// saveDateTime();
+
+// const { actual_date, acutal_time, last_login_time } = getDateTime();
+
+// document.querySelector("#recentLogins").textContent = `Date: ${actual_date}.... 
+//       Time: ${acutal_time}.... LastLogin: ${last_login_time} `;
+// document.querySelector("#userDetail").textContent = user?.name || "Guest";
 // document.querySelector("#notifications").textContent = "2 unread messages";
 
 let activityData = [];
@@ -193,15 +212,6 @@ async function fetchActivityData(
 
     let items = data.activities || data.transactions || [];
 
-    // if (type === "transaction") {
-    //   activityData = items.map((tx) => ({
-    //     date: tx.date,
-    //     action: `${tx.type.toUpperCase()} - $${tx.amount}`,
-    //     status: randomStatus(),
-    //   }));
-
-    // let items = data.activities || data.transactions || [];
-
     if (type === "transaction") {
       activityData = items.map((tx) => ({
         date: tx.date,
@@ -233,11 +243,6 @@ async function fetchActivityData(
   }
 }
 
-// Random status simulator for demo
-// function randomStatus() {
-//   const statuses = ["Success", "Pending", "Failed"];
-//   return statuses[Math.floor(Math.random() * statuses.length)];
-// }
 
 // Apply filters (search only, dropdown triggers fetch)
 function applyFilters() {
